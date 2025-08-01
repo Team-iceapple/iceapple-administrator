@@ -1,9 +1,9 @@
 <script lang="ts">
     // 사이드바 메뉴 아이템
     const menuItems = [
-        {name: '홈', icon: '/images/slidebar/home.svg'},
-        {name: '회의실 예약', icon: '/images/slidebar/rooms.svg'},
-        {name: '졸업작품 관리', icon: '/images/slidebar/project.svg'}
+        {name: 'Home', icon: '/images/slidebar/home.svg'},
+        {name: 'Rooms', icon: '/images/slidebar/rooms.svg'},
+        {name: 'Projects', icon: '/images/slidebar/project.svg'}
     ];
 
     // 로그아웃 처리
