@@ -1,10 +1,18 @@
 <script lang="ts">
-import '@/app.css';
-import { SideBar } from '$lib/components/ui';
+    import '@/app.css';
+    import {Header, SideBar} from '$lib/components/ui';
 
-let { children } = $props();
+    let {children} = $props();
 </script>
 
-<SideBar />
+<div class="min-h-screen bg-gray-50 ">
+  <SideBar/>
 
-{@render children()}
+  <div class="ml-64">
+    <Header/>
+
+    <main class="p-6">
+      {@render children()}
+    </main>
+  </div>
+</div>
