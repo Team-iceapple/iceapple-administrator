@@ -16,15 +16,15 @@
     }
 </script>
 
-<aside class="fixed left-0 top-0 z-40 h-screen w-64 bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
+<aside class="fixed left-0 top-0 z-40 h-screen w-64 bg-gray-50  border-r border-gray-200 ">
 <div class="flex h-full flex-col">
     <!-- 로고 영역 -->
-    <div class="flex h-16 items-center justify-center border-b border-gray-200 dark:border-gray-700">
+    <div class="flex h-16 items-center justify-center border-b border-gray-200 ">
       <div class="flex items-center space-x-3 gap-2">
         <img src="/logo.webp" alt="Logo" class="h-13 w-auto"/>
         <div class="flex flex-col">
-          <span class="text-lg font-bold text-gray-900 dark:text-white">Kiosk Admin</span>
-          <p class="text-sm text-gray-500 dark:text-gray-400">모바일융합공학과</p>
+          <span class="text-lg font-bold text-gray-900 e">Kiosk Admin</span>
+          <p class="text-sm text-gray-500 ">모바일융합공학과</p>
         </div>
       </div>
     </div>
@@ -33,7 +33,7 @@
     <nav class="flex-1 space-y-1 px-4 py-4">
       {#each menuItems as item}
         <div
-          class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200 text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+          class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200 text-black  hover:bg-gray-100 ">
           <img src={item.icon} alt={item.name + ' 아이콘'} class="mr-3 h-6 w-6"/>
           {item.name}
         </div>
@@ -42,10 +42,10 @@
 
 
     <!-- 로그아웃 버튼 -->
-    <div class="border-t border-gray-200 dark:border-gray-700 p-4">
+    <div class="border-t border-gray-200  p-4">
       <button
         onclick={handleLogout}
-        class="flex items-center w-full px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20 rounded-lg transition-colors duration-200"
+        class="flex items-center w-full px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50  rounded-lg transition-colors duration-200"
       >
         <img src="/images/slidebar/logout.svg" alt="로그아웃 아이콘" class="mr-3 h-6 w-6"/>
         로그아웃

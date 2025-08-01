@@ -1,12 +1,12 @@
 <script lang="ts">
 </script>
 
-<header class="bg-gray-100 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 h-16 flex items-center justify-between px-6">
+<header class="bg-gray-100  border-b border-gray-200  h-16 flex items-center justify-between px-6">
   <div class="flex items-center space-x-4">
     <!-- 학과 로고 및 정보 -->
     <div class="flex items-center space-x-3">
       <div class="flex flex-col">
-        <h1 class="text-lg font-bold text-gray-900 dark:text-white content-center">Main Page</h1>
+        <h1 class="text-lg font-bold text-gray-900  content-center">Main Page</h1>
       </div>
     </div>
   </div>
@@ -20,7 +20,7 @@
         </svg>
       </div>
       <div class="flex flex-col">
-        <span class="text-sm font-medium text-gray-900 dark:text-white">관리자 000님</span>
+        <span class="text-sm font-medium text-gray-900 ">관리자 000님</span>
       </div>
     </div>
   </div>
