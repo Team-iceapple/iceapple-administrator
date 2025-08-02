@@ -1,9 +1,9 @@
 <script lang="ts">
     // 사이드바 메뉴 아이템
     const menuItems = [
-        {name: 'Home', icon: '/images/slidebar/home.svg'},
-        {name: 'Rooms', icon: '/images/slidebar/rooms.svg'},
-        {name: 'Projects', icon: '/images/slidebar/project.svg'}
+        {name: 'Home', href: '/', icon: '/images/slidebar/home.svg'},
+        {name: 'Place', href: '/place', icon: '/images/slidebar/place.svg'},
+        {name: 'Projects', href: '/projects', icon: '/images/slidebar/project.svg'}
     ];
 
     // 로그아웃 처리
@@ -17,7 +17,7 @@
 </script>
 
 <aside class="fixed left-0 top-0 z-40 h-screen w-64 bg-gray-50  border-r border-gray-200 ">
-<div class="flex h-full flex-col">
+  <div class="flex h-full flex-col">
     <!-- 로고 영역 -->
     <div class="flex h-16 items-center justify-center border-b border-gray-200 ">
       <div class="flex items-center space-x-3 gap-2">
@@ -29,17 +29,19 @@
       </div>
     </div>
 
-    <!-- 메뉴 영역 -->
     <nav class="flex-1 space-y-1 px-4 py-4">
       {#each menuItems as item}
-        <div
-          class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200 text-black  hover:bg-gray-100 ">
+        <a
+          href={item.href}
+          class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200
+						? 'bg-blue-100 text-blue-700'
+						: 'text-gray-700 hover:bg-gray-100'}"
+        >
           <img src={item.icon} alt={item.name + ' 아이콘'} class="mr-3 h-6 w-6"/>
           {item.name}
-        </div>
+        </a>
       {/each}
     </nav>
-
 
     <!-- 로그아웃 버튼 -->
     <div class="border-t border-gray-200  p-4">
