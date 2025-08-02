@@ -277,8 +277,20 @@ const fakeProjects: Project[] = [
   },
 ];
 
+const MIN_PAGE = 1;
+let currentPage = $state<number>(1);
 let projectPerPage = $state<number>(5);
-let currentProjects = $state<Project[]>(fakeProjects.slice(0, projectPerPage));
+let isFirstPage = $derived<boolean>(currentPage === MIN_PAGE);
+let isLastPage = $derived<boolean>(
+  currentPage === fakeProjects.length / projectPerPage,
+);
+
+let currentProjects = $derived<Project[]>(
+  fakeProjects.slice(
+    (currentPage - 1) * projectPerPage,
+    currentPage * projectPerPage,
+  ),
+);
 let selectedProject = $state<Project | null>(null);
 
 const projectModel = new ProjectModel();
@@ -316,44 +328,74 @@ function handleProjectItem(e: KeyboardEvent | MouseEvent, project: Project) {
   }
 }
 
+function handlePageNextBtn() {
+  currentPage++;
+}
+
+function handlePagePrevBtn() {
+  currentPage--;
+}
+
 $inspect(selectedProject);
 </script>
 
 <div class="flex">
   <!-- 좌측 패널 -->
   <div class="basis-1/2">
-    <div class="flex flex-col p-4 gap-1">
+    <div class="flex flex-col gap-1">
       {#each currentProjects as project (project.id)}
-        <div class="flex gap-2 p-2 cursor-pointer border rounded-sm shadow"
-             class:bg-blue-400={project.id === selectedProject?.id}
-             onclick={(e) => handleProjectItem(e, project)}
-             onkeydown={(e) => handleProjectItem(e, project)}
-             role="button"
-             tabindex={0}
+        <!-- 예시 수정: 목록 아이템 -->
+        <div
+          class="flex gap-2 p-2 cursor-pointer border border-gray-300 rounded-md shadow-sm hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          class:bg-blue-100={project.id === selectedProject?.id}
+          onclick={(e) => handleProjectItem(e, project)}
+          onkeydown={(e) => handleProjectItem(e, project)}
+          role="button"
+          tabindex={0}
         >
-          <img class="size-32" src={project.thumbnail} alt={`${project.name} Thumbnail`}/>
+          <img class="size-28 rounded-sm border border-gray-300" src={project.thumbnail} alt={`${project.name} Thumbnail`} />
           <div class="flex flex-col text-left">
-            <p class="text-lg font-semibold">{project.name}</p>
-            <p class="text-sm">{project.members.map((member) => member.name)}</p>
+            <p class="text-lg font-semibold text-gray-800">{project.name}</p>
+            <p class="text-sm text-gray-500">{project.members.map((member) => member.name)}</p>
           </div>
         </div>
       {/each}
+
+      <div class="m-auto flex gap-2">
+        <button class="px-2 py-1 border border-gray-400 rounded-sm text-gray-700
+                       hover:bg-gray-100 active:ring-1 active:ring-blue-300
+                       transition-colors
+                       disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-300 disabled:cursor-not-allowed"
+                onclick={handlePagePrevBtn}
+                disabled={isFirstPage}
+        >이전</button>
+        <input class="text-center rounded-sm border border-gray-300 w-[2rem]"
+               bind:value={currentPage}
+        />
+        <button class="px-2 py-1 border border-gray-400 rounded-sm text-gray-700
+                       hover:bg-gray-100 active:ring-1 active:ring-blue-300
+                       transition-colors
+                       disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-300 disabled:cursor-not-allowed"
+                onclick={handlePageNextBtn}
+                disabled={isLastPage}
+        >다음</button>
+      </div>
     </div>
   </div>
 
   <!-- 세로 구분선 -->
-  <div class="border-l mx-1"></div>
+  <div class="border-l-2 border-l-gray-100 mx-2"></div>
 
   <!-- 우측 패널 -->
-  <div class="flex flex-col p-2 basis-1/2">
-    <h2 class="font-bold text-3xl border-b">세부 정보</h2>
+  <div class="flex flex-col basis-1/2">
+    <h2 class="font-bold text-2xl border-b border-gray-300">세부 정보</h2>
     <!-- 세부 정보 목록 -->
     <div class="flex flex-col p-2 gap-2">
       <!-- 년도 -->
       <div class="flex flex-col">
-        <label class="text-lg"
+        <label class="text-base"
                for="year-input">년도</label>
-        <select class="p-1 border rounded-sm"
+        <select class="p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                 id='year-input'
                 bind:value={projectModel.year}>
           {#each generateYears(new Date().getFullYear() - 5) as year}
@@ -364,9 +406,9 @@ $inspect(selectedProject);
 
       <!-- 프로젝트 이름 -->
       <div class="flex flex-col">
-        <label class="text-lg"
+        <label class="text-base"
                for="name-input">제목</label>
-        <input class="p-1 border rounded-sm"
+        <input class="p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                id="name-input"
                type="text"
                bind:value={projectModel.name}
@@ -375,9 +417,9 @@ $inspect(selectedProject);
 
       <!-- 팀 이름 -->
       <div class="flex flex-col">
-        <label class="text-lg"
+        <label class="text-base"
                for="name-input">팀 이름</label>
-        <input class="p-1 border rounded-sm"
+        <input class="p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                id="name-input"
                type="text"
                bind:value={projectModel.team_name}
@@ -387,22 +429,22 @@ $inspect(selectedProject);
       <!-- 팀원 -->
       <div class="flex flex-col gap-2">
         <div class="flex items-center gap-2">
-          <label class="text-lg"
+          <label class="text-base"
                  for="member-name-input">팀원</label>
 
           <div class="flex-1 flex gap-2">
-            <input class="p-1 border rounded-sm"
+            <input class="p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                    id="member-name-input"
                    bind:value={memberBuilder.name}
                    type="text"
                    placeholder="팀원 이름.."
             />
-            <input class="flex-1 p-1 border rounded-sm"
+            <input class="p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                    bind:value={memberBuilder.extra}
                    type="text"
                    placeholder="팀원 세부 정보.."
             />
-            <button class="px-2 border rounded-sm"
+            <button class="px-3 py-1 border border-gray-400 rounded-sm text-gray-700 hover:bg-gray-100 active:ring-1 active:ring-blue-300 transition-colors"
                     onclick={handleAddMember}
             >
               추가
@@ -411,12 +453,12 @@ $inspect(selectedProject);
         </div>
 
         <!-- 팀원 목록 -->
-          <div class="border rounded">
+          <div class="border border-gray-300 rounded">
             <table class="table-fixed w-full text-sm">
               <thead>
-                <tr class="border-b">
-                  <th class="w-1/8 px-2 py-1 text-left border-r">이름</th>
-                  <th class="w-1/2 px-2 py-1 text-left">세부 정보</th>
+                <tr class="border-b border-gray-300 bg-slate-50 text-left">
+                  <th class="w-1/8 px-2 py-1 border-r border-gray-300">이름</th>
+                  <th class="w-1/2 px-2 py-1">세부 정보</th>
                 </tr>
               </thead>
             </table>
@@ -424,8 +466,8 @@ $inspect(selectedProject);
               <table class="table-fixed w-full text-sm">
                 <tbody>
                 {#each projectModel.members as member, i (i)}
-                  <tr class="not-first:border-t last:border-b">
-                    <td class="w-1/8 px-2 py-1 border-r">{member.name}</td>
+                  <tr class="not-first:border-t last:border-b border-gray-300">
+                    <td class="w-1/8 px-2 py-1 border-r border-gray-300">{member.name}</td>
                     <td class="relative w-1/2 px-2 py-1">
                       {member.extra}
                       <button class="absolute right-2 text-red-500"
@@ -442,9 +484,9 @@ $inspect(selectedProject);
 
       <!-- 프로젝트 설명 -->
       <div class="flex flex-col">
-        <label class="text-lg"
+        <label class="text-base"
                for="description-text-area">설명</label>
-        <textarea class="p-1 border rounded-sm h-24"
+        <textarea class="p-1 border border-gray-300 rounded-sm h-24 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   id="description-text-area"
                   bind:value={projectModel.description}
         ></textarea>
@@ -452,9 +494,9 @@ $inspect(selectedProject);
 
       <!-- 썸네일 업로드 -->
       <div class="flex flex-col">
-        <label class="text-lg"
+        <label class="text-base"
                for="thumbnail-upload">썸네일 이미지</label>
-        <input class="p-1 border rounded-sm"
+        <input class="p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                type="file"
                id="thumbnail-upload"
                bind:value={projectModel.thumbnailFile}
@@ -463,9 +505,9 @@ $inspect(selectedProject);
 
       <!-- PDF 파일 업로드 -->
       <div class="flex flex-col">
-        <label class="text-lg"
+        <label class="text-base"
                for="pdf-upload">포스터 PDF</label>
-        <input class="p-1 border rounded-sm"
+        <input class="p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                type="file"
                id="pdf-upload"
                bind:value={projectModel.pdfFile}
@@ -473,7 +515,7 @@ $inspect(selectedProject);
       </div>
     </div>
 
-    <button class="mr-4 mt-4 py-1 px-2 border rounded-sm self-end"
+    <button class="self-end px-3 py-1 border border-gray-400 rounded-sm text-gray-700 hover:bg-gray-100 active:ring-1 active:ring-blue-300 transition-colors"
             onclick={projectModel.post}
     >
       {selectedProject ? '저장' : '생성'}
