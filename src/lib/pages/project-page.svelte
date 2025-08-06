@@ -1,121 +1,12 @@
 <script lang="ts">
+import type {
+  Member,
+  Project,
+  ProjectCreateBody,
+  ProjectCreateFile,
+  ProjectUpdateBody,
+} from '$lib/types';
 import { generateYears } from '$lib/utils';
-
-type Member = {
-  name: string;
-  extra: string;
-};
-
-class MemberBuilder {
-  name: string;
-  extra: string;
-
-  constructor() {
-    this.name = $state<string>('');
-    this.extra = $state<string>('');
-  }
-
-  build = (): Member => {
-    return {
-      name: this.name,
-      extra: this.extra,
-    };
-  };
-
-  clear = (): void => {
-    this.name = '';
-    this.extra = '';
-  };
-}
-
-type Project = {
-  id: string;
-  name: string;
-  team_name: string;
-  members: Member[];
-  thumbnail: string;
-  pdf_url: string;
-  description: string;
-  main_url: string;
-  year: number;
-};
-
-type ProjectCreateBody = {
-  name: string;
-  team_name: string;
-  members: Member[];
-  description: string;
-  main_url: string;
-  year: number;
-};
-
-class ProjectModel {
-  name: string;
-  team_name: string;
-  members: Member[];
-  description: string;
-  main_url: string;
-  year: number;
-  pdf_url: string;
-  pdfFile: File | null;
-  thumbnail_url: string;
-  thumbnailFile: File | null;
-
-  constructor() {
-    this.name = $state<string>('');
-    this.team_name = $state<string>('');
-    this.members = $state<Member[]>([]);
-    this.description = $state<string>('');
-    this.main_url = $state<string>('');
-    this.year = $state<number>(new Date().getFullYear());
-    this.pdfFile = $state<File | null>(null);
-    this.pdf_url = $state<string>('');
-    this.thumbnail_url = $state<string>('');
-    this.thumbnailFile = $state<File | null>(null);
-  }
-
-  set = (project: Project) => {
-    this.name = project.name;
-    this.team_name = project.team_name;
-    this.members = [...project.members];
-    this.description = project.description;
-    this.main_url = project.main_url;
-    this.year = project.year;
-    this.pdf_url = project.pdf_url;
-    this.thumbnail_url = project.thumbnail;
-  };
-
-  addMember = (member: Member) => {
-    this.members.push(member);
-  };
-
-  clear = () => {
-    this.name = '';
-    this.team_name = '';
-    this.members = [];
-    this.description = '';
-    this.main_url = '';
-    this.year = new Date().getFullYear();
-    this.pdf_url = '';
-    this.pdfFile = null;
-    this.thumbnail_url = '';
-    this.thumbnailFile = null;
-  };
-
-  post = () => {
-    // 백엔드에 POST 요청
-    const createBody: ProjectCreateBody = $state.snapshot({
-      name: this.name,
-      team_name: this.team_name,
-      members: this.members,
-      description: this.description,
-      main_url: this.main_url,
-      year: this.year,
-    });
-
-    console.info(JSON.stringify(createBody, null, 2));
-  };
-}
 
 const fakeProjects: Project[] = [
   {
@@ -293,28 +184,107 @@ let currentProjects = $derived<Project[]>(
 );
 let selectedProject = $state<Project | null>(null);
 
-const projectModel = new ProjectModel();
-const memberBuilder = new MemberBuilder();
+let project = $state<Project>({
+  id: '',
+  name: '',
+  team_name: '',
+  members: [],
+  description: '',
+  thumbnail: '',
+  year: new Date().getFullYear(),
+  main_url: '',
+  pdf_url: '',
+});
+
+let projectFile = $state<Partial<ProjectCreateFile>>({
+  pdf: undefined,
+  thumbnail: undefined,
+});
+
+function resetProject() {
+  project.name = '';
+  project.team_name = '';
+  project.members = [];
+  project.description = '';
+  project.main_url = '';
+  project.year = new Date().getFullYear();
+  project.pdf_url = '';
+  project.thumbnail = '';
+
+  projectFile.pdf = undefined;
+  projectFile.thumbnail = undefined;
+}
+
+function setProject(newProject: Project) {
+  // project.name = newProject.name;
+  // project.team_name = newProject.team_name;
+  // project.members = [...newProject.members];
+  // project.description = newProject.description;
+  // project.main_url = newProject.main_url;
+  // project.year = newProject.year;
+  // project.pdf_url = newProject.pdf_url;
+  // project.thumbnail = newProject.thumbnail;
+
+  project = { ...newProject };
+}
+
+function handleSave() {
+  if (selectedProject) {
+    console.info('수정 요청');
+    const updateBody = $state.snapshot<ProjectUpdateBody>({
+      name: project.name,
+      team_name: project.team_name,
+      members: project.members,
+      description: project.description,
+      main_url: project.main_url,
+      year: project.year,
+    });
+
+    console.info(updateBody);
+  } else {
+    console.info('생성 요청');
+
+    const createBody = $state.snapshot<ProjectCreateBody>({
+      name: project.name,
+      team_name: project.team_name,
+      members: project.members,
+      description: project.description,
+      main_url: project.main_url,
+      year: project.year,
+    });
+
+    console.info(createBody);
+  }
+}
+
+let memberName = $state('');
+let memberExtra = $state('');
 
 function handleAddMember() {
-  const member = memberBuilder.build();
-  projectModel.addMember(member);
-  memberBuilder.clear();
+  const member: Member = {
+    name: memberName,
+    extra: memberExtra,
+  };
+
+  project.members.push(member);
+
+  memberName = '';
+  memberExtra = '';
 }
 
 function handleDeleteMember(index: number) {
-  projectModel.members.splice(index, 1);
+  project.members.splice(index, 1);
 }
 
 function selectProject(project: Project) {
-  if (project === selectedProject) {
+  if (project.id === selectedProject?.id) {
     selectedProject = null;
-    projectModel.clear();
+    resetProject();
     return;
   }
 
   selectedProject = project;
-  projectModel.set(project);
+  setProject(project);
 }
 
 function handleProjectItem(e: KeyboardEvent | MouseEvent, project: Project) {
@@ -336,7 +306,7 @@ function handlePagePrevBtn() {
   currentPage--;
 }
 
-$inspect(selectedProject);
+$inspect(selectedProject, project);
 </script>
 
 <div class="flex">
@@ -397,9 +367,9 @@ $inspect(selectedProject);
                for="year-input">년도</label>
         <select class="p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                 id='year-input'
-                bind:value={projectModel.year}>
-          {#each generateYears(new Date().getFullYear() - 5) as year}
-            <option value={year}>{year}</option>
+                bind:value={project.year}>
+          {#each generateYears(new Date().getFullYear() - 5) as yearNum}
+            <option value={yearNum}>{yearNum}</option>
           {/each}
         </select>
       </div>
@@ -411,7 +381,7 @@ $inspect(selectedProject);
         <input class="p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                id="name-input"
                type="text"
-               bind:value={projectModel.name}
+               bind:value={project.name}
         />
       </div>
 
@@ -422,7 +392,7 @@ $inspect(selectedProject);
         <input class="p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                id="name-input"
                type="text"
-               bind:value={projectModel.team_name}
+               bind:value={project.team_name}
         />
       </div>
 
@@ -435,12 +405,12 @@ $inspect(selectedProject);
           <div class="flex-1 flex gap-2">
             <input class="p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                    id="member-name-input"
-                   bind:value={memberBuilder.name}
+                   bind:value={memberName}
                    type="text"
                    placeholder="팀원 이름.."
             />
             <input class="p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
-                   bind:value={memberBuilder.extra}
+                   bind:value={memberExtra}
                    type="text"
                    placeholder="팀원 세부 정보.."
             />
@@ -465,7 +435,7 @@ $inspect(selectedProject);
             <div class="h-28 overflow-y-auto">
               <table class="table-fixed w-full text-sm">
                 <tbody>
-                {#each projectModel.members as member, i (i)}
+                {#each project.members as member, i (i)}
                   <tr class="not-first:border-t last:border-b border-gray-300">
                     <td class="w-1/8 px-2 py-1 border-r border-gray-300">{member.name}</td>
                     <td class="relative w-1/2 px-2 py-1">
@@ -488,7 +458,7 @@ $inspect(selectedProject);
                for="description-text-area">설명</label>
         <textarea class="p-1 border border-gray-300 rounded-sm h-24 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   id="description-text-area"
-                  bind:value={projectModel.description}
+                  bind:value={project.description}
         ></textarea>
       </div>
 
@@ -499,7 +469,7 @@ $inspect(selectedProject);
         <input class="p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                type="file"
                id="thumbnail-upload"
-               bind:value={projectModel.thumbnailFile}
+               bind:value={projectFile.thumbnail}
         />
       </div>
 
@@ -510,13 +480,13 @@ $inspect(selectedProject);
         <input class="p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                type="file"
                id="pdf-upload"
-               bind:value={projectModel.pdfFile}
+               bind:value={projectFile.pdf}
         />
       </div>
     </div>
 
     <button class="self-end px-3 py-1 border border-gray-400 rounded-sm text-gray-700 hover:bg-gray-100 active:ring-1 active:ring-blue-300 transition-colors"
-            onclick={projectModel.post}
+            onclick={handleSave}
     >
       {selectedProject ? '저장' : '생성'}
     </button>
