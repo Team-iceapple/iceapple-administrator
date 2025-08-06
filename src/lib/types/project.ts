@@ -20,6 +20,8 @@ export type ProjectCreateFile = {
   pdf: File;
 };
 
+export type ProjectUpdateFile = Partial<ProjectCreateFile>;
+
 export type ProjectCreateBody = {
   name: string;
   team_name: string;
