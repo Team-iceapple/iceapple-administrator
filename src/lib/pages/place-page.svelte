@@ -1,12 +1,13 @@
 <script lang="ts">
+    import type {
+        Room,
+        Student,
+        Reservation,
+        ChangeType,
+        PendingToChange,
+    } from '$lib/types';
+
     const today = Date.now()
-
-    type Room = {
-            id: string;
-            name: string;
-            description?: string | null;
-
-    }
 
     class RoomBuilder {
             id: string;
@@ -45,21 +46,12 @@
         { id: 'r_8', name: 'N4303', description: '강의실이에요.'},
     ]);
 
-    type Reservation = {
-            id: string;
-            times: string[];
-            date: Date;
-            room: Room;
-            member: string;
-            description?: string | null;
-    };
-
     class ReservationModel {
         id: string;
         times: string[];
         date: Date;
         room: Room;
-        member: string;
+        student: Student;
         description?: string | null;
 
         constructor() {
@@ -67,7 +59,7 @@
             this.times = $state<string[]>([]);
             this.date = $state<Date>(new Date());
             this.room = $state<Room>({id: '', name: '', description: null});
-            this.member = $state<string>('');
+            this.student = $state<Student>({id: '', number: '', phone: ''});
             this.description = $state<string | null>(null);
         }
 
@@ -76,7 +68,7 @@
             this.times = [...reservation.times]; // 배열은 spread로 복사 (ok)
             this.date = new Date(reservation.date.getTime()); // 새로운 Date 객체 생성
             this.room = { ...reservation.room }; // 새로운 Room 객체 생성
-            this.member = reservation.member;
+            this.student = { ...reservation.student };
             this.description = reservation.description;
         }
 
@@ -85,7 +77,7 @@
             this.times = [];
             this.date = new Date();
             this.room = {id: '', name: '', description: null};
-            this.member = '';
+            this.student = {id: '', number: '', phone: ''};
             this.description = null;
         }
 
@@ -95,7 +87,7 @@
                 times: this.times,
                 date: this.date,
                 room: this.room,
-                member: this.member,
+                student: this.student,
                 description: this.description,
             });
 
@@ -109,7 +101,7 @@
             times: ['11', '12', '13'],
             date: new Date(),
             room: {id: 'r_2', name: 'N5506'},
-            member: '20221038',
+            student: {id: 's_1', number: '20221038', phone: '010-4733-3560'},
             description: null,
         },
         {
@@ -117,7 +109,7 @@
             times: ['10', '11', '12'],
             date: new Date(),
             room: {id: 'r_3', name: 'N5511'},
-            member: '20221032',
+            student: {id: 's_1', number: '20221032', phone: '010-4733-3560'},
             description: null,
         },
         {
@@ -125,7 +117,7 @@
             times: ['15', '16', '17'],
             date: new Date(),
             room: {id: 'r_5', name: 'N4119'},
-            member: '20221038',
+            student: {id: 's_1', number: '20221011', phone: '010-4733-3560'},
             description: null,
         },
         {
@@ -133,7 +125,7 @@
             times: ['11', '12', '13'],
             date: new Date(),
             room: {id: 'r_5', name: 'N4119'},
-            member: '20221032',
+            student: {id: 's_1', number: '20221023', phone: '010-4733-3560'},
             description: null,
         },
         {
@@ -141,13 +133,12 @@
             times: ['13', '14', '15'],
             date: new Date(),
             room: {id: 'r_3', name: 'N5511'},
-            member: '20221039',
+            student: {id: 's_1', number: '20221020', phone: '010-4113-3110'},
             description: "캡스톤 회의",
         },
     ])
 
     const times = ['09', '10', '11', '12', '13', '14', '15', '16', '17', '18'];
-
 
     let selectedRoomIds = $state<string[]>([]); // 선택된 공간의 ID들을 저장할 배열
     let searchTerm = $state('');
@@ -190,12 +181,6 @@
             reservationModel.room.description = selectedRoomObject.description;
         }
     });
-    type ChangeType = 'APPLY' | 'EDIT' | 'DELETE';
-    type PendingToChange = {
-        id: number; // 목록에서 각 항목을 구분하기 위한 임시 ID
-        type: ChangeType;
-        data: Reservation;
-    };
 
     let selectedReservation = $state<Reservation | null>(null);
 
@@ -233,7 +218,7 @@
 
     function addPendingToChange(type: ChangeType) {
         // 유효성 검사: 장소, 예약자, 시간이 비어있으면 실행하지 않음
-        if (!reservationModel.room.name || !reservationModel.member || reservationModel.times.length === 0) {
+        if (!reservationModel.room.name || !reservationModel.student.number || reservationModel.times.length === 0) {
             alert('장소, 예약자, 시간 정보를 모두 입력해주세요.');
             return;
         }
@@ -319,7 +304,7 @@
                                         <span class={`w-3 h-3 rounded-full mr-2 ${ reservation ? 'bg-green-400' : 'bg-red-400'}`}></span>
                                         <span>{time}</span>
                                         {#if reservation}
-                                          <span class="ml-auto text-gray-500 text-xs" >{reservation.member}</span>
+                                          <span class="ml-auto text-gray-500 text-xs" >{reservation.student.number}</span>
                                         {/if}
                                       </li>
                                   </ul>
@@ -419,7 +404,11 @@
             </div>
             <div class="grid grid-cols-3 items-center">
               <label for="reserver" class="text-sm font-medium">예약자 :</label>
-              <input type="text" id="reserver" bind:value={reservationModel.member} class="col-span-2 border rounded-md px-2 py-1 text-sm" />
+              <input type="text" id="reserver" bind:value={reservationModel.student.number} class="col-span-2 border rounded-md px-2 py-1 text-sm" />
+            </div>
+            <div class="grid grid-cols-3 items-center">
+              <label for="reserver" class="text-sm font-medium">전화번호 :</label>
+              <input type="text" id="reserver" bind:value={reservationModel.student.phone} class="col-span-2 border rounded-md px-2 py-1 text-sm" />
             </div>
             <div class="grid grid-cols-3 items-start">
               <label for="description" class="text-sm font-medium mt-1">설명 :</label>
@@ -435,7 +424,7 @@
                 {#each pendingChanges as change (change.id)}
                   <li class="flex items-center justify-between p-2 bg-gray-50 rounded-md">
                     <div>
-                            <span class="font-bold text-xs px-2 py-1 rounded-full text-white">
+                            <span class="bg-blue-500 font-bold text-xs px-2 py-1 rounded-full text-white">
                                 {change.type}
                             </span>
                       <span class="ml-2 text-sm">{change.data.room.name} / {change.data.times.join(', ')}</span>
