@@ -141,7 +141,7 @@ function goToPage(page: number) {
 <div class="flex">
   <!-- 좌측 패널 -->
   <div class="basis-1/2">
-    <div class="flex flex-col gap-1">
+    <div class="flex flex-col gap-1 min-h-[720px] ">
       {#each currentProjects as project (project.id)}
         <!-- 예시 수정: 목록 아이템 -->
         <div
@@ -160,24 +160,32 @@ function goToPage(page: number) {
         </div>
       {/each}
 
-      <div class="m-auto flex gap-2">
-        <button class="px-2 py-1 border border-gray-400 rounded-sm text-gray-700
-                       hover:bg-gray-100 active:ring-1 active:ring-blue-300
-                       transition-colors
-                       disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-300 disabled:cursor-not-allowed"
+      <div class="mt-auto mx-auto flex items-center gap-3 text-gray-700">
+        <button class="px-2 py-1 border border-gray-400 rounded-sm
+                 hover:bg-gray-100 active:ring-1 active:ring-blue-300
+                 transition-colors
+                 disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-300 disabled:cursor-not-allowed"
                 onclick={() => goToPage(currentPage - 1)}
                 disabled={currentPage === MIN_PAGE}
-        >이전</button>
-        <input class="text-center rounded-sm border border-gray-300 w-[2rem]"
-               bind:value={currentPage}
-        />
-        <button class="px-2 py-1 border border-gray-400 rounded-sm text-gray-700
-                       hover:bg-gray-100 active:ring-1 active:ring-blue-300
-                       transition-colors
-                       disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-300 disabled:cursor-not-allowed"
+        >
+          이전
+        </button>
+
+        <div class="text-sm">
+          <span class="font-bold">{currentPage}</span>
+          <span class="mx-1">/</span>
+          <span>{maxPage}</span>
+        </div>
+
+        <button class="px-2 py-1 border border-gray-400 rounded-sm
+                 hover:bg-gray-100 active:ring-1 active:ring-blue-300
+                 transition-colors
+                 disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-300 disabled:cursor-not-allowed"
                 onclick={() => goToPage(currentPage + 1)}
                 disabled={currentPage === maxPage}
-        >다음</button>
+        >
+          다음
+        </button>
       </div>
     </div>
   </div>
