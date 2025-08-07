@@ -1,4 +1,11 @@
 <script lang="ts">
+import type {
+  Member,
+  Project,
+  ProjectCreateBody,
+  ProjectCreateFile,
+  ProjectUpdateBody,
+} from '$lib/types';
 import { generateYears } from '$lib/utils';
 
 const fakeProjects: Project[] = [
