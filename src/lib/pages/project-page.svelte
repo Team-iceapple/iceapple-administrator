@@ -1,4 +1,5 @@
 <script lang="ts">
+import { goto } from '$app/navigation';
 import type {
   Member,
   Project,
@@ -8,180 +9,16 @@ import type {
 } from '$lib/types';
 import { generateYears } from '$lib/utils';
 
-const fakeProjects: Project[] = [
-  {
-    id: 'pjt-001',
-    name: 'SmartFarm Vision',
-    team_name: 'Team Ignite',
-    members: [
-      { name: '오하늘', extra: 'Frontend Developer' },
-      { name: '김민수', extra: 'ML Engineer' },
-      { name: '한수현', extra: '풀스택 개발' },
-      { name: '김승준', extra: '구경' },
-    ],
-    thumbnail: 'https://example.com/smartfarm_vision_thumbnail.jpg',
-    pdf_url: 'https://example.com/smartfarm_vision.pdf',
-    description:
-      '일상 속 탄소 배출을 시각화하고 줄이도록 돕는 친환경 습관 관리 앱',
-    main_url: 'https://smartfarmvision.example.com',
-    year: 2023,
-  },
-  {
-    id: 'pjt-002',
-    name: 'Campus Delivery',
-    team_name: 'Team Ignite',
-    members: [
-      { name: '한수현', extra: 'ML Engineer' },
-      { name: '이하나', extra: '기획 및 디자인' },
-      { name: '백승우', extra: '서버 개발' },
-    ],
-    thumbnail: 'https://example.com/campus_delivery_thumbnail.jpg',
-    pdf_url: 'https://example.com/campus_delivery.pdf',
-    description:
-      '일상 속 탄소 배출을 시각화하고 줄이도록 돕는 친환경 습관 관리 앱',
-    main_url: 'https://campusdelivery.example.com',
-    year: 2024,
-  },
-  {
-    id: 'pjt-003',
-    name: 'EcoTrack',
-    team_name: 'Team Fusion',
-    members: [
-      { name: '신하윤', extra: '모바일 개발' },
-      { name: '박지윤', extra: '서버 개발' },
-      { name: '이하나', extra: '기획 및 디자인' },
-    ],
-    thumbnail: 'https://example.com/ecotrack_thumbnail.jpg',
-    pdf_url: 'https://example.com/ecotrack.pdf',
-    description:
-      'AI 기반 영상 인식으로 작물 생장 상태를 분석하는 스마트팜 시스템',
-    main_url: 'https://ecotrack.example.com',
-    year: 2024,
-  },
-  {
-    id: 'pjt-004',
-    name: 'FitTogether',
-    team_name: 'Team Nexus',
-    members: [
-      { name: '김민수', extra: '서버 개발' },
-      { name: '정하람', extra: 'Backend Developer' },
-      { name: '윤서준', extra: '기획 및 디자인' },
-    ],
-    thumbnail: 'https://example.com/fittogether_thumbnail.jpg',
-    pdf_url: 'https://example.com/fittogether.pdf',
-    description:
-      'AI 기반 영상 인식으로 작물 생장 상태를 분석하는 스마트팜 시스템',
-    main_url: 'https://fittogether.example.com',
-    year: 2022,
-  },
-  {
-    id: 'pjt-005',
-    name: 'StudyMate',
-    team_name: 'Team Nexus',
-    members: [
-      { name: '김서영', extra: '기획 및 디자인' },
-      { name: '오하늘', extra: 'Backend Developer' },
-    ],
-    thumbnail: 'https://example.com/studymate_thumbnail.jpg',
-    pdf_url: 'https://example.com/studymate.pdf',
-    description:
-      'AI 기반 영상 인식으로 작물 생장 상태를 분석하는 스마트팜 시스템',
-    main_url: 'https://studymate.example.com',
-    year: 2022,
-  },
-  {
-    id: 'pjt-006',
-    name: 'PetCare AI',
-    team_name: 'Team Ignite',
-    members: [
-      { name: '정우성', extra: '서버 개발' },
-      { name: '문지후', extra: '모바일 개발' },
-      { name: '남지민', extra: '데이터 분석' },
-    ],
-    thumbnail: 'https://example.com/petcare_ai_thumbnail.jpg',
-    pdf_url: 'https://example.com/petcare_ai.pdf',
-    description:
-      '건강한 피트니스 루틴을 함께 유지할 수 있도록 돕는 소셜 피트니스 앱',
-    main_url: 'https://petcareai.example.com',
-    year: 2024,
-  },
-  {
-    id: 'pjt-007',
-    name: 'AutoChef',
-    team_name: 'Team Nexus',
-    members: [
-      { name: '권지아', extra: 'Frontend Developer' },
-      { name: '이도현', extra: 'ML Engineer' },
-      { name: '윤하린', extra: '기획 및 디자인' },
-    ],
-    thumbnail: 'https://example.com/autochef_thumbnail.jpg',
-    pdf_url: 'https://example.com/autochef.pdf',
-    description:
-      '일상 속 탄소 배출을 시각화하고 줄이도록 돕는 친환경 습관 관리 앱',
-    main_url: 'https://autochef.example.com',
-    year: 2022,
-  },
-  {
-    id: 'pjt-008',
-    name: 'GreenGo',
-    team_name: 'Team Apex',
-    members: [
-      { name: '백승우', extra: '서버 개발' },
-      { name: '정우성', extra: 'ML Engineer' },
-      { name: '이하나', extra: '기획 및 디자인' },
-    ],
-    thumbnail: 'https://example.com/greengo_thumbnail.jpg',
-    pdf_url: 'https://example.com/greengo.pdf',
-    description:
-      'AI 기반 영상 인식으로 작물 생장 상태를 분석하는 스마트팜 시스템',
-    main_url: 'https://greengo.example.com',
-    year: 2023,
-  },
-  {
-    id: 'pjt-009',
-    name: 'WeatherWise',
-    team_name: 'Team Spark',
-    members: [
-      { name: '배태현', extra: 'Frontend Developer' },
-      { name: '윤하린', extra: '풀스택 개발' },
-    ],
-    thumbnail: 'https://example.com/weatherwise_thumbnail.jpg',
-    pdf_url: 'https://example.com/weatherwise.pdf',
-    description: '대학 캠퍼스 내 소규모 배달을 자동화한 스마트 배달 플랫폼',
-    main_url: 'https://weatherwise.example.com',
-    year: 2024,
-  },
-  {
-    id: 'pjt-010',
-    name: 'CleanCity Map',
-    team_name: 'Team Fusion',
-    members: [
-      { name: '문지후', extra: '데이터 분석' },
-      { name: '노유진', extra: '풀스택 개발' },
-    ],
-    thumbnail: 'https://example.com/cleancity_map_thumbnail.jpg',
-    pdf_url: 'https://example.com/cleancity_map.pdf',
-    description:
-      '일상 속 탄소 배출을 시각화하고 줄이도록 돕는 친환경 습관 관리 앱',
-    main_url: 'https://cleancitymap.example.com',
-    year: 2022,
-  },
-];
+const {
+  projects,
+  IMAGE_URL,
+  currentPage: initialCurrentPage,
+  maxPage,
+} = $props();
 
 const MIN_PAGE = 1;
-let currentPage = $state<number>(1);
-let projectPerPage = $state<number>(5);
-let isFirstPage = $derived<boolean>(currentPage === MIN_PAGE);
-let isLastPage = $derived<boolean>(
-  currentPage === fakeProjects.length / projectPerPage,
-);
-
-let currentProjects = $derived<Project[]>(
-  fakeProjects.slice(
-    (currentPage - 1) * projectPerPage,
-    currentPage * projectPerPage,
-  ),
-);
+let currentPage = $derived<number>(initialCurrentPage);
+let currentProjects = $derived<Project[]>(projects);
 let selectedProject = $state<Project | null>(null);
 
 let project = $state<Project>({
@@ -216,15 +53,6 @@ function resetProject() {
 }
 
 function setProject(newProject: Project) {
-  // project.name = newProject.name;
-  // project.team_name = newProject.team_name;
-  // project.members = [...newProject.members];
-  // project.description = newProject.description;
-  // project.main_url = newProject.main_url;
-  // project.year = newProject.year;
-  // project.pdf_url = newProject.pdf_url;
-  // project.thumbnail = newProject.thumbnail;
-
   project = { ...newProject };
 }
 
@@ -298,21 +126,22 @@ function handleProjectItem(e: KeyboardEvent | MouseEvent, project: Project) {
   }
 }
 
-function handlePageNextBtn() {
-  currentPage++;
-}
+function goToPage(page: number) {
+  const isValidPage = MIN_PAGE <= page && page <= maxPage;
 
-function handlePagePrevBtn() {
-  currentPage--;
+  if (isValidPage) {
+    goto(`?page=${page}`, {
+      keepFocus: true,
+      noScroll: true,
+    });
+  }
 }
-
-$inspect(selectedProject, project);
 </script>
 
 <div class="flex">
   <!-- 좌측 패널 -->
   <div class="basis-1/2">
-    <div class="flex flex-col gap-1">
+    <div class="flex flex-col gap-1 min-h-[720px] ">
       {#each currentProjects as project (project.id)}
         <!-- 예시 수정: 목록 아이템 -->
         <div
@@ -323,7 +152,7 @@ $inspect(selectedProject, project);
           role="button"
           tabindex={0}
         >
-          <img class="size-28 rounded-sm border border-gray-300" src={project.thumbnail} alt={`${project.name} Thumbnail`} />
+          <img class="size-28 rounded-sm border border-gray-300" src={`${IMAGE_URL}/${project.thumbnail}`} alt={`${project.name} Thumbnail`} />
           <div class="flex flex-col text-left">
             <p class="text-lg font-semibold text-gray-800">{project.name}</p>
             <p class="text-sm text-gray-500">{project.members.map((member) => member.name)}</p>
@@ -331,24 +160,32 @@ $inspect(selectedProject, project);
         </div>
       {/each}
 
-      <div class="m-auto flex gap-2">
-        <button class="px-2 py-1 border border-gray-400 rounded-sm text-gray-700
-                       hover:bg-gray-100 active:ring-1 active:ring-blue-300
-                       transition-colors
-                       disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-300 disabled:cursor-not-allowed"
-                onclick={handlePagePrevBtn}
-                disabled={isFirstPage}
-        >이전</button>
-        <input class="text-center rounded-sm border border-gray-300 w-[2rem]"
-               bind:value={currentPage}
-        />
-        <button class="px-2 py-1 border border-gray-400 rounded-sm text-gray-700
-                       hover:bg-gray-100 active:ring-1 active:ring-blue-300
-                       transition-colors
-                       disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-300 disabled:cursor-not-allowed"
-                onclick={handlePageNextBtn}
-                disabled={isLastPage}
-        >다음</button>
+      <div class="mt-auto mx-auto flex items-center gap-3 text-gray-700">
+        <button class="px-2 py-1 border border-gray-400 rounded-sm
+                 hover:bg-gray-100 active:ring-1 active:ring-blue-300
+                 transition-colors
+                 disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-300 disabled:cursor-not-allowed"
+                onclick={() => goToPage(currentPage - 1)}
+                disabled={currentPage === MIN_PAGE}
+        >
+          이전
+        </button>
+
+        <div class="text-sm">
+          <span class="font-bold">{currentPage}</span>
+          <span class="mx-1">/</span>
+          <span>{maxPage}</span>
+        </div>
+
+        <button class="px-2 py-1 border border-gray-400 rounded-sm
+                 hover:bg-gray-100 active:ring-1 active:ring-blue-300
+                 transition-colors
+                 disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-300 disabled:cursor-not-allowed"
+                onclick={() => goToPage(currentPage + 1)}
+                disabled={currentPage === maxPage}
+        >
+          다음
+        </button>
       </div>
     </div>
   </div>
