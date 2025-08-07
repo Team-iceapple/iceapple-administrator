@@ -1,5 +1,5 @@
 <script lang="ts">
-import { generateYears } from '$lib/utils';
+import { generateYears } from '$lib/utils/year';
 
 type Member = {
   name: string;

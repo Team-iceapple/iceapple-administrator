@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>강의실 대여 관리자 대시보드</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* For Webkit browsers like Chrome, Safari */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        /* For IE, Edge */
+        .no-scrollbar {
+            -ms-overflow-style: none;  
+            scrollbar-width: none;  
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <aside class="w-20 bg-white shadow-lg flex flex-col items-center py-6 space-y-8">
+            <div class="text-blue-600">
+                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M4 21V1s0-1 1-1h14s1 0 1 1v20s0 1-1 1H5s-1 0-1-1zm2-2h12V3H6v16zm2-13h3v3H8V6zm5 0h3v3h-3V6zm-5 5h3v3H8v-3zm5 0h3v3h-3v-3z"/>
+                </svg>
+            </div>
+            <nav class="flex flex-col items-center space-y-6">
+                <a href="#" class="p-2 rounded-lg bg-blue-100 text-blue-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.653-.124-1.28-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.653.124-1.28.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                </a>
+                <a href="#" class="p-2 rounded-lg text-gray-500 hover:bg-blue-50">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                </a>
+            </nav>
+            <div class="mt-auto">
+                <a href="#" class="p-2 rounded-lg text-gray-500 hover:bg-blue-50">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H3" />
+                    </svg>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col">
+            <!-- Header -->
+            <header class="bg-white shadow-sm p-4 flex justify-between items-center">
+                <div class="flex items-center space-x-4">
+                    <h1 class="text-xl font-bold text-gray-800">날짜 선택</h1>
+                    <div class="flex items-center space-x-2 text-gray-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+                        </svg>
+                        <span>Default - Today</span>
+                    </div>
+                </div>
+                <div class="text-sm text-gray-600">
+                    관리자님, 환영합니다.
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <main class="flex-1 p-6 overflow-y-auto">
+                <!-- Room Status Section -->
+                <section>
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-semibold">실시간 예약 현황</h2>
+                        <div class="flex space-x-2">
+                            <button class="p-2 bg-white rounded-full shadow-sm hover:bg-gray-100">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
+                            </button>
+                            <button class="p-2 bg-white rounded-full shadow-sm hover:bg-gray-100">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex space-x-4 pb-4 overflow-x-auto no-scrollbar">
+                        <!-- Room Card -->
+                        <div class="bg-white p-4 rounded-lg shadow-md min-w-[200px] flex-shrink-0">
+                            <h3 class="font-bold border-b pb-2 mb-2">N5504</h3>
+                            <ul class="space-y-2 text-sm">
+                                <li class="flex items-center"><span class="w-4 h-4 rounded-full bg-green-400 mr-3"></span> 09:00</li>
+                                <li class="flex items-center"><span class="w-4 h-4 rounded-full bg-red-400 mr-3"></span> 10:00 | 20221038</li>
+                                <li class="flex items-center"><span class="w-4 h-4 rounded-full bg-red-400 mr-3"></span> 11:00 | 20221038</li>
+                                <li class="flex items-center"><span class="w-4 h-4 rounded-full bg-red-400 mr-3"></span> 12:00 | 20221038</li>
+                                <li class="flex items-center"><span class="w-4 h-4 rounded-full bg-green-400 mr-3"></span> 13:00</li>
+                                <li class="flex items-center"><span class="w-4 h-4 rounded-full bg-green-400 mr-3"></span> 14:00</li>
+                                <li class="flex items-center"><span class="w-4 h-4 rounded-full bg-red-400 mr-3"></span> 15:00 | 20221023</li>
+                            </ul>
+                        </div>
+                        <!-- Room Card -->
+                        <div class="bg-white p-4 rounded-lg shadow-md min-w-[200px] flex-shrink-0">
+                            <h3 class="font-bold border-b pb-2 mb-2">N5506</h3>
+                            <ul class="space-y-2 text-sm">
+                                <li class="flex items-center"><span class="w-4 h-4 rounded-full bg-green-400 mr-3"></span> 09:00</li>
+                                <li class="flex items-center"><span class="w-4 h-4 rounded-full bg-green-400 mr-3"></span> 10:00</li>
+                                <li class="flex items-center"><span class="w-4 h-4 rounded-full bg-green-400 mr-3"></span> 11:00</li>
+                                <li class="flex items-center"><span class="w-4 h-4 rounded-full bg-green-400 mr-3"></span> 12:00</li>
+                                <li class="flex items-center"><span class="w-4 h-4 rounded-full bg-green-400 mr-3"></span> 13:00</li>
+                                <li class="flex items-center"><span class="w-4 h-4 rounded-full bg-green-400 mr-3"></span> 14:00</li>
+                                <li class="flex items-center"><span class="w-4 h-4 rounded-full bg-red-400 mr-3"></span> 15:00 | 20221032</li>
+                            </ul>
+                        </div>
+                        <!-- Other room cards... -->
+                        <div class="bg-white p-4 rounded-lg shadow-md min-w-[200px] flex-shrink-0">
+                            <h3 class="font-bold border-b pb-2 mb-2">N5511</h3>
+                            <ul class="space-y-2 text-sm">
+                                <li class="flex items-center"><span class="w-4 h-4 rounded-full bg-green-400 mr-3"></span> 09:00</li>
+                                <li class="flex items-center"><span class="w-4 h-4 rounded-full bg-green-400 mr-3"></span> 10:00</li>
+                                <li class="flex items-center"><span class="w-4 h-4 rounded-full bg-green-400 mr-3"></span> 11:00</li>
+                                <li class="flex items-center"><span class="w-4 h-4 rounded-full bg-green-400 mr-3"></span> 12:00</li>
+                                <li class="flex items-center"><span class="w-4 h-4 rounded-full bg-green-400 mr-3"></span> 13:00</li>
+                                <li class="flex items-center"><span class="w-4 h-4 rounded-full bg-green-400 mr-3"></span> 14:00</li>
+                                <li class="flex items-center"><span class="w-4 h-4 rounded-full bg-green-400 mr-3"></span> 15:00</li>
+                            </ul>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-md min-w-[200px] flex-shrink-0">
+                            <h3 class="font-bold border-b pb-2 mb-2">N5512</h3>
+                            <ul class="space-y-2 text-sm">
+                                <li class="flex items-center"><span class="w-4 h-4 rounded-full bg-red-400 mr-3"></span> 09:00 | 20221038</li>
+                                <li class="flex items-center"><span class="w-4 h-4 rounded-full bg-red-400 mr-3"></span> 10:00 | 20221038</li>
+                                <li class="flex items-center"><span class="w-4 h-4 rounded-full bg-red-400 mr-3"></span> 11:00 | 20221038</li>
+                                <li class="flex items-center"><span class="w-4 h-4 rounded-full bg-green-400 mr-3"></span> 12:00</li>
+                                <li class="flex items-center"><span class="w-4 h-4 rounded-full bg-green-400 mr-3"></span> 13:00</li>
+                                <li class="flex items-center"><span class="w-4 h-4 rounded-full bg-green-400 mr-3"></span> 14:00</li>
+                                <li class="flex items-center"><span class="w-4 h-4 rounded-full bg-green-400 mr-3"></span> 15:00</li>
+                            </ul>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-md min-w-[200px] flex-shrink-0">
+                            <h3 class="font-bold border-b pb-2 mb-2">N5513</h3>
+                            <ul class="space-y-2 text-sm">
+                                <li class="flex items-center"><span class="w-4 h-4 rounded-full bg-red-400 mr-3"></span> 09:00 | 20221038</li>
+                                <li class="flex items-center"><span class="w-4 h-4 rounded-full bg-red-400 mr-3"></span> 10:00 | 20221038</li>
+                                <li class="flex items-center"><span class="w-4 h-4 rounded-full bg-red-400 mr-3"></span> 11:00 | 20221038</li>
+                                <li class="flex items-center"><span class="w-4 h-4 rounded-full bg-green-400 mr-3"></span> 12:00</li>
+                                <li class="flex items-center"><span class="w-4 h-4 rounded-full bg-green-400 mr-3"></span> 13:00</li>
+                                <li class="flex items-center"><span class="w-4 h-4 rounded-full bg-green-400 mr-3"></span> 14:00</li>
+                                <li class="flex items-center"><span class="w-4 h-4 rounded-full bg-green-400 mr-3"></span> 15:00</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Management Section -->
+                <section class="mt-6 grid grid-cols-1 xl:grid-cols-3 gap-6">
+                    <!-- Room List -->
+                    <div class="bg-white p-6 rounded-lg shadow-md xl:col-span-1">
+                        <h3 class="text-lg font-semibold mb-4">공간 목록</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-md">
+                                <span class="font-medium">N5504</span>
+                                <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 rounded" checked>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-md">
+                                <span class="font-medium">N5506</span>
+                                <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 rounded" checked>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-md">
+                                <span class="font-medium">N5511</span>
+                                <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 rounded">
+                            </div>
+                             <div class="flex items-center justify-between p-3 bg-gray-50 rounded-md">
+                                <span class="font-medium">N5512</span>
+                                <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 rounded">
+                            </div>
+                            <div class="border-t pt-4 mt-4 flex space-x-2">
+                                <button class="w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700">등록</button>
+                                <button class="w-full py-2 px-4 bg-red-500 text-white rounded-md hover:bg-red-600">삭제</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reservation Management -->
+                    <div class="bg-white p-6 rounded-lg shadow-md xl:col-span-1">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold">공간 예약 관리</h3>
+                            <div class="flex space-x-1">
+                                <button class="text-xs py-1 px-2 bg-gray-200 rounded hover:bg-gray-300">등록</button>
+                                <button class="text-xs py-1 px-2 bg-gray-200 rounded hover:bg-gray-300">수정</button>
+                                <button class="text-xs py-1 px-2 bg-gray-200 rounded hover:bg-gray-300">삭제</button>
+                            </div>
+                        </div>
+                        <form class="space-y-4 text-sm">
+                            <div class="grid grid-cols-3 items-center">
+                                <label for="date" class="font-medium col-span-1">날짜 :</label>
+                                <input type="date" id="date" value="2025-05-08" class="col-span-2 w-full p-2 border rounded-md">
+                            </div>
+                            <div class="grid grid-cols-3 items-center">
+                                <label for="location" class="font-medium col-span-1">장소 :</label>
+                                <select id="location" class="col-span-2 w-full p-2 border rounded-md">
+                                    <option>506</option>
+                                    <option>504</option>
+                                    <option>511</option>
+                                </select>
+                            </div>
+                            <div class="grid grid-cols-3 items-center">
+                                <label for="time" class="font-medium col-span-1">시간 :</label>
+                                <div class="col-span-2 flex items-center space-x-2">
+                                    <select class="w-full p-2 border rounded-md"><option>09</option></select>
+                                    <span>~</span>
+                                    <select class="w-full p-2 border rounded-md"><option>12</option></select>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-3 items-center">
+                                <label for="reserver" class="font-medium col-span-1">예약자 :</label>
+                                <input type="text" id="reserver" value="20221038" class="col-span-2 w-full p-2 border rounded-md bg-gray-100" readonly>
+                            </div>
+                            <div class="grid grid-cols-3 items-center">
+                                <label for="tel" class="font-medium col-span-1">Tel :</label>
+                                <input type="tel" id="tel" value="010-1234-5678" class="col-span-2 w-full p-2 border rounded-md">
+                            </div>
+                            <div class="grid grid-cols-3 items-start">
+                                <label for="description" class="font-medium col-span-1 mt-2">설명 :</label>
+                                <textarea id="description" rows="3" class="col-span-2 w-full p-2 border rounded-md">~로 인한 취소</textarea>
+                            </div>
+                            <div class="pt-4">
+                                <button type="submit" class="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700">저장</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Save History -->
+                    <div class="bg-white p-6 rounded-lg shadow-md xl:col-span-1">
+                        <h3 class="text-lg font-semibold mb-4">저장 내역</h3>
+                        <ul class="space-y-3 text-sm">
+                            <li class="p-3 bg-gray-50 rounded-md">
+                                <p class="font-semibold text-gray-700">등록 | 2025-05-08 | 504 | 18:00</p>
+                                <p class="text-gray-500 mt-1">사용자 20221038에 의해 등록됨.</p>
+                            </li>
+                            <li class="p-3 bg-gray-50 rounded-md">
+                                <p class="font-semibold text-gray-700">수정 | 2025-05-08 | 506 | 09:00</p>
+                                <p class="text-gray-500 mt-1">시간 변경 (10:00 -> 09:00)</p>
+                            </li>
+                             <li class="p-3 bg-gray-50 rounded-md">
+                                <p class="font-semibold text-gray-700">삭제 | 2025-05-07 | 511 | 14:00</p>
+                                <p class="text-gray-500 mt-1">사용자 요청으로 삭제됨.</p>
+                            </li>
+                        </ul>
+                         <div class="border-t pt-4 mt-4 flex space-x-2">
+                            <button class="w-full py-2 px-4 bg-gray-600 text-white rounded-md hover:bg-gray-700">반영</button>
+                            <button class="w-full py-2 px-4 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">삭제</button>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            <!-- Footer -->
+            <footer class="text-center p-4 text-sm text-gray-500 border-t">
+                &copy; 2025 Svelte Learning. All Rights Reserved.
+            </footer>
+        </div>
+    </div>
+
+</body>
+</html>
