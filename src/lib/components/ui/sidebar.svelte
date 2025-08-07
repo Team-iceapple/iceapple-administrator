@@ -1,19 +1,19 @@
 <script lang="ts">
-    // 사이드바 메뉴 아이템
-    const menuItems = [
-        {name: 'Home', href: '/', icon: '/images/slidebar/home.svg'},
-        {name: 'Place', href: '/place', icon: '/images/slidebar/place.svg'},
-        {name: 'Projects', href: '/projects', icon: '/images/slidebar/project.svg'}
-    ];
+// 사이드바 메뉴 아이템
+const menuItems = [
+  { name: 'Home', href: '/', icon: '/images/slidebar/home.svg' },
+  { name: 'Place', href: '/place', icon: '/images/slidebar/place.svg' },
+  { name: 'Projects', href: '/projects', icon: '/images/slidebar/project.svg' },
+];
 
-    // 로그아웃 처리
-    function handleLogout() {
-        if (confirm('정말 로그아웃 하시겠습니까?')) {
-            console.log('로그아웃 처리');
-            alert('로그아웃되었습니다.');
-            // 여기에 실제 로그아웃 로직 추가 예정 (예: 세션 삭제, 리다이렉트 등)
-        }
-    }
+// 로그아웃 처리
+function handleLogout() {
+  if (confirm('정말 로그아웃 하시겠습니까?')) {
+    console.log('로그아웃 처리');
+    alert('로그아웃되었습니다.');
+    // 여기에 실제 로그아웃 로직 추가 예정 (예: 세션 삭제, 리다이렉트 등)
+  }
+}
 </script>
 
 <aside class="fixed left-0 top-0 z-40 h-screen w-64 bg-gray-50  border-r border-gray-200 ">

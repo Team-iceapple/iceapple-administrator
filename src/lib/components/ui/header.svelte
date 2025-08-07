@@ -1,5 +1,5 @@
 <script lang="ts">
-    let { title }: { title: string } = $props();
+let { title }: { title: string } = $props();
 </script>
 
 <header class="bg-gray-100  border-b border-gray-200  h-16 flex items-center justify-between px-6">

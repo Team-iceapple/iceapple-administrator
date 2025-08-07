@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { ProjectPage } from '$lib/pages';
+import { ProjectPage } from '$lib/pages';
 </script>
 
 <ProjectPage />

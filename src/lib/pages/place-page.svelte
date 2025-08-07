@@ -1,285 +1,302 @@
 <script lang="ts">
-    import type {
-        Room,
-        Student,
-        Reservation,
-        ChangeType,
-        PendingToChange,
-    } from '$lib/types';
+import type {
+  ChangeType,
+  PendingToChange,
+  Reservation,
+  Room,
+  Student,
+} from '$lib/types';
 
-    const today = Date.now()
+const today = Date.now();
 
-    class RoomBuilder {
-            id: string;
-            name: string;
-            description?: string | null;
+class RoomBuilder {
+  id: string;
+  name: string;
+  description?: string | null;
 
-            constructor() {
-                    this.id = $state<string>('a');
-                    this.name = $state<string>('');
-                    this.description = $state<string | null>(null);
-            }
+  constructor() {
+    this.id = $state<string>('a');
+    this.name = $state<string>('');
+    this.description = $state<string | null>(null);
+  }
 
-            build = (): Room => {
-                return {
-                    id: `r_${Date.now()}`, // 간단한 고유 ID 생성
-                    name: this.name,
-                    description: this.description,
-                };
-            };
+  build = (): Room => {
+    return {
+      id: `r_${Date.now()}`, // 간단한 고유 ID 생성
+      name: this.name,
+      description: this.description,
+    };
+  };
 
-            clear = (): void => {
-                    this.id = '';
-                    this.name = '';
-                    this.description = null;
-            };
-    }
+  clear = (): void => {
+    this.id = '';
+    this.name = '';
+    this.description = null;
+  };
+}
 
-    let fakeRooms = $state<Room[]> ([
-        { id: 'r_1', name: 'N5504', description: '책상이 4개에요.' },
-        { id: 'r_2', name: 'N5506', description: '강의실이에요.' },
-        { id: 'r_3', name: 'N5511', description: '큰 TV가 있어요.'},
-        { id: 'r_4', name: 'N5512', description: '소규모 모임에 좋아요.' },
-        { id: 'r_5', name: 'N4119', description: '강의실이에요.' },
-        { id: 'r_6', name: 'N4301', description: '세미나실이에요.'},
-        { id: 'r_7', name: 'N4302', description: '회의실이에요.'},
-        { id: 'r_8', name: 'N4303', description: '강의실이에요.'},
-    ]);
+let fakeRooms = $state<Room[]>([
+  { id: 'r_1', name: 'N5504', description: '책상이 4개에요.' },
+  { id: 'r_2', name: 'N5506', description: '강의실이에요.' },
+  { id: 'r_3', name: 'N5511', description: '큰 TV가 있어요.' },
+  { id: 'r_4', name: 'N5512', description: '소규모 모임에 좋아요.' },
+  { id: 'r_5', name: 'N4119', description: '강의실이에요.' },
+  { id: 'r_6', name: 'N4301', description: '세미나실이에요.' },
+  { id: 'r_7', name: 'N4302', description: '회의실이에요.' },
+  { id: 'r_8', name: 'N4303', description: '강의실이에요.' },
+]);
 
-    class ReservationModel {
-        id: string;
-        times: string[];
-        date: Date;
-        room: Room;
-        student: Student;
-        description?: string | null;
+class ReservationModel {
+  id: string;
+  times: string[];
+  date: Date;
+  room: Room;
+  student: Student;
+  description?: string | null;
 
-        constructor() {
-            this.id = `rv_${Date.now()}`;
-            this.times = $state<string[]>([]);
-            this.date = $state<Date>(new Date());
-            this.room = $state<Room>({id: '', name: '', description: null});
-            this.student = $state<Student>({id: '', number: '', phone: ''});
-            this.description = $state<string | null>(null);
-        }
+  constructor() {
+    this.id = `rv_${Date.now()}`;
+    this.times = $state<string[]>([]);
+    this.date = $state<Date>(new Date());
+    this.room = $state<Room>({ id: '', name: '', description: null });
+    this.student = $state<Student>({ id: '', number: '', phone: '' });
+    this.description = $state<string | null>(null);
+  }
 
-        set = (reservation : Reservation) => {
-            this.id = reservation.id;
-            this.times = [...reservation.times]; // 배열은 spread로 복사 (ok)
-            this.date = new Date(reservation.date.getTime()); // 새로운 Date 객체 생성
-            this.room = { ...reservation.room }; // 새로운 Room 객체 생성
-            this.student = { ...reservation.student };
-            this.description = reservation.description;
-        }
+  set = (reservation: Reservation) => {
+    this.id = reservation.id;
+    this.times = [...reservation.times]; // 배열은 spread로 복사 (ok)
+    this.date = new Date(reservation.date.getTime()); // 새로운 Date 객체 생성
+    this.room = { ...reservation.room }; // 새로운 Room 객체 생성
+    this.student = { ...reservation.student };
+    this.description = reservation.description;
+  };
 
-        clear = () => {
-            this.id = '';
-            this.times = [];
-            this.date = new Date();
-            this.room = {id: '', name: '', description: null};
-            this.student = {id: '', number: '', phone: ''};
-            this.description = null;
-        }
+  clear = () => {
+    this.id = '';
+    this.times = [];
+    this.date = new Date();
+    this.room = { id: '', name: '', description: null };
+    this.student = { id: '', number: '', phone: '' };
+    this.description = null;
+  };
 
-        post = () => {
-            const createReservation: Reservation = $state.snapshot({
-                id: this.id,
-                times: this.times,
-                date: this.date,
-                room: this.room,
-                student: this.student,
-                description: this.description,
-            });
-
-            console.info(JSON.stringify(createReservation, null, 2));
-        };
-    }
-
-    let fakeReservation : Reservation[] = $state([
-        {
-            id: 'rv_1',
-            times: ['11', '12', '13'],
-            date: new Date(),
-            room: {id: 'r_2', name: 'N5506'},
-            student: {id: 's_1', number: '20221038', phone: '010-4733-3560'},
-            description: null,
-        },
-        {
-            id: 'rv_2',
-            times: ['10', '11', '12'],
-            date: new Date(),
-            room: {id: 'r_3', name: 'N5511'},
-            student: {id: 's_1', number: '20221032', phone: '010-4733-3560'},
-            description: null,
-        },
-        {
-            id: 'rv_3',
-            times: ['15', '16', '17'],
-            date: new Date(),
-            room: {id: 'r_5', name: 'N4119'},
-            student: {id: 's_1', number: '20221011', phone: '010-4733-3560'},
-            description: null,
-        },
-        {
-            id: 'rv_4',
-            times: ['11', '12', '13'],
-            date: new Date(),
-            room: {id: 'r_5', name: 'N4119'},
-            student: {id: 's_1', number: '20221023', phone: '010-4733-3560'},
-            description: null,
-        },
-        {
-            id: 'rv_5',
-            times: ['13', '14', '15'],
-            date: new Date(),
-            room: {id: 'r_3', name: 'N5511'},
-            student: {id: 's_1', number: '20221020', phone: '010-4113-3110'},
-            description: "캡스톤 회의",
-        },
-    ])
-
-    const times = ['09', '10', '11', '12', '13', '14', '15', '16', '17', '18'];
-
-    let selectedRoomIds = $state<string[]>([]); // 선택된 공간의 ID들을 저장할 배열
-    let searchTerm = $state('');
-    let displayedRooms = $derived(
-        fakeRooms.filter(room => room.name.toLowerCase().includes(searchTerm.toLowerCase().trim()))
-            .sort((a, b) => a.name.localeCompare(b.name))
-    );
-
-    const roomBuilder = new RoomBuilder();
-
-    function handleAddRoom() {
-        if (!roomBuilder.name.trim()) {
-            alert('공간 이름을 입력해주세요.');
-            return;
-        }
-        const room = roomBuilder.build();
-        fakeRooms.push(room);
-        fakeRooms.sort((a, b) => a.name.localeCompare(b.name));
-        roomBuilder.clear();
-    }
-
-    function handleDeleteSelectedRooms() {
-        if (selectedRoomIds.length === 0) {
-            alert('삭제할 공간을 선택해주세요.');
-            return;
-        }
-        // selectedRoomIds에 포함되지 않은 공간들만 남김
-        fakeRooms = fakeRooms.filter(room => !selectedRoomIds.includes(room.id));
-        // 선택 상태 초기화
-        selectedRoomIds = [];
-    }
-
-    $effect(() => {
-        // 이름이 변경될 때마다 fakeRooms에서 해당 이름의 전체 Room 객체를 찾습니다.
-        const selectedRoomObject = fakeRooms.find(r => r.name === reservationModel.room.name);
-
-        // 찾았다면, reservationModel.room 객체 전체를 업데이트합니다.
-        if (selectedRoomObject) {
-            reservationModel.room.id = selectedRoomObject.id;
-            reservationModel.room.description = selectedRoomObject.description;
-        }
+  post = () => {
+    const createReservation: Reservation = $state.snapshot({
+      id: this.id,
+      times: this.times,
+      date: this.date,
+      room: this.room,
+      student: this.student,
+      description: this.description,
     });
 
-    let selectedReservation = $state<Reservation | null>(null);
+    console.info(JSON.stringify(createReservation, null, 2));
+  };
+}
 
-    const reservationModel = new ReservationModel();
+let fakeReservation: Reservation[] = $state([
+  {
+    id: 'rv_1',
+    times: ['11', '12', '13'],
+    date: new Date(),
+    room: { id: 'r_2', name: 'N5506' },
+    student: { id: 's_1', number: '20221038', phone: '010-4733-3560' },
+    description: null,
+  },
+  {
+    id: 'rv_2',
+    times: ['10', '11', '12'],
+    date: new Date(),
+    room: { id: 'r_3', name: 'N5511' },
+    student: { id: 's_1', number: '20221032', phone: '010-4733-3560' },
+    description: null,
+  },
+  {
+    id: 'rv_3',
+    times: ['15', '16', '17'],
+    date: new Date(),
+    room: { id: 'r_5', name: 'N4119' },
+    student: { id: 's_1', number: '20221011', phone: '010-4733-3560' },
+    description: null,
+  },
+  {
+    id: 'rv_4',
+    times: ['11', '12', '13'],
+    date: new Date(),
+    room: { id: 'r_5', name: 'N4119' },
+    student: { id: 's_1', number: '20221023', phone: '010-4733-3560' },
+    description: null,
+  },
+  {
+    id: 'rv_5',
+    times: ['13', '14', '15'],
+    date: new Date(),
+    room: { id: 'r_3', name: 'N5511' },
+    student: { id: 's_1', number: '20221020', phone: '010-4113-3110' },
+    description: '캡스톤 회의',
+  },
+]);
 
-    function findReservation(roomId: string, time : string) {
-        return fakeReservation.find(r => r.room.id === roomId && r.times.includes(time));
+const times = ['09', '10', '11', '12', '13', '14', '15', '16', '17', '18'];
+
+let selectedRoomIds = $state<string[]>([]); // 선택된 공간의 ID들을 저장할 배열
+let searchTerm = $state('');
+let displayedRooms = $derived(
+  fakeRooms
+    .filter((room) =>
+      room.name.toLowerCase().includes(searchTerm.toLowerCase().trim()),
+    )
+    .sort((a, b) => a.name.localeCompare(b.name)),
+);
+
+const roomBuilder = new RoomBuilder();
+
+function handleAddRoom() {
+  if (!roomBuilder.name.trim()) {
+    alert('공간 이름을 입력해주세요.');
+    return;
+  }
+  const room = roomBuilder.build();
+  fakeRooms.push(room);
+  fakeRooms.sort((a, b) => a.name.localeCompare(b.name));
+  roomBuilder.clear();
+}
+
+function handleDeleteSelectedRooms() {
+  if (selectedRoomIds.length === 0) {
+    alert('삭제할 공간을 선택해주세요.');
+    return;
+  }
+  // selectedRoomIds에 포함되지 않은 공간들만 남김
+  fakeRooms = fakeRooms.filter((room) => !selectedRoomIds.includes(room.id));
+  // 선택 상태 초기화
+  selectedRoomIds = [];
+}
+
+$effect(() => {
+  // 이름이 변경될 때마다 fakeRooms에서 해당 이름의 전체 Room 객체를 찾습니다.
+  const selectedRoomObject = fakeRooms.find(
+    (r) => r.name === reservationModel.room.name,
+  );
+
+  // 찾았다면, reservationModel.room 객체 전체를 업데이트합니다.
+  if (selectedRoomObject) {
+    reservationModel.room.id = selectedRoomObject.id;
+    reservationModel.room.description = selectedRoomObject.description;
+  }
+});
+
+let selectedReservation = $state<Reservation | null>(null);
+
+const reservationModel = new ReservationModel();
+
+function findReservation(roomId: string, time: string) {
+  return fakeReservation.find(
+    (r) => r.room.id === roomId && r.times.includes(time),
+  );
+}
+
+function handleReservationItem(
+  e: KeyboardEvent | MouseEvent,
+  reservation: Reservation,
+) {
+  const isAllow =
+    e instanceof MouseEvent ||
+    (e instanceof KeyboardEvent && (e.key === 'Enter' || e.key === ' '));
+
+  if (isAllow) {
+    e.preventDefault();
+    selectReservation(reservation);
+  }
+}
+
+function selectReservation(reservation: Reservation) {
+  if (reservation === selectedReservation) {
+    selectedReservation = null;
+    reservationModel.clear();
+    return;
+  }
+
+  selectedReservation = reservation;
+  reservationModel.set(reservation);
+}
+
+$inspect(selectedReservation);
+
+let pendingChanges = $state<PendingToChange[]>([]);
+
+function addPendingToChange(type: ChangeType) {
+  // 유효성 검사: 장소, 예약자, 시간이 비어있으면 실행하지 않음
+  if (
+    !reservationModel.room.name ||
+    !reservationModel.student.number ||
+    reservationModel.times.length === 0
+  ) {
+    alert('장소, 예약자, 시간 정보를 모두 입력해주세요.');
+    return;
+  }
+
+  // 수정 또는 삭제 시에는 기존 예약 정보가 선택되었는지 확인
+  if (type !== 'APPLY' && !reservationModel.id) {
+    alert('수정 또는 삭제할 예약을 먼저 선택해주세요.');
+    return;
+  }
+
+  const newChange: PendingToChange = {
+    id: Date.now(), // 고유한 임시 ID 부여
+    type: type,
+    data: $state.snapshot(reservationModel), // 현재 폼 데이터를 복사해서 저장
+  };
+
+  pendingChanges.push(newChange);
+
+  // 폼 초기화
+  reservationModel.clear();
+  selectedReservation = null;
+}
+
+function removePendingToChange(id: number) {
+  pendingChanges = pendingChanges.filter((change) => change.id !== id);
+}
+
+function handleFinalSave() {
+  if (pendingChanges.length === 0) {
+    alert('저장할 내역이 없습니다.');
+    return;
+  }
+
+  console.log('--- 최종 저장 시작 ---');
+
+  pendingChanges.forEach((change) => {
+    switch (change.type) {
+      case 'APPLY':
+        // 실제로는 여기서 서버 API를 호출하여 데이터를 생성합니다.
+        console.log('[등록 처리]', change.data);
+        fakeReservation.push(change.data); // 테스트용으로 실제 데이터에 반영
+        break;
+      case 'EDIT': {
+        // 실제로는 여기서 서버 API를 호출하여 데이터를 업데이트합니다.
+        console.log('[수정 처리]', change.data);
+        const indexToUpdate = fakeReservation.findIndex(
+          (r) => r.id === change.data.id,
+        );
+        if (indexToUpdate > -1) fakeReservation[indexToUpdate] = change.data;
+        break;
+      }
+      case 'DELETE':
+        // 실제로는 여기서 서버 API를 호출하여 데이터를 삭제합니다.
+        console.log('[삭제 처리]', change.data);
+        fakeReservation = fakeReservation.filter(
+          (r) => r.id !== change.data.id,
+        );
+        break;
     }
+  });
 
-    function handleReservationItem(e: KeyboardEvent | MouseEvent, reservation: Reservation) {
-        const isAllow =
-            e instanceof MouseEvent ||
-            (e instanceof KeyboardEvent && (e.key === 'Enter' || e.key === ' '));
-
-        if (isAllow) {
-            e.preventDefault();
-            selectReservation(reservation);
-        }
-    }
-
-    function selectReservation(reservation: Reservation) {
-        if (reservation === selectedReservation) {
-            selectedReservation = null;
-            reservationModel.clear();
-            return;
-        }
-
-        selectedReservation = reservation;
-        reservationModel.set(reservation);
-    }
-
-    $inspect(selectedReservation);
-
-    let pendingChanges = $state<PendingToChange[]>([]);
-
-    function addPendingToChange(type: ChangeType) {
-        // 유효성 검사: 장소, 예약자, 시간이 비어있으면 실행하지 않음
-        if (!reservationModel.room.name || !reservationModel.student.number || reservationModel.times.length === 0) {
-            alert('장소, 예약자, 시간 정보를 모두 입력해주세요.');
-            return;
-        }
-
-        // 수정 또는 삭제 시에는 기존 예약 정보가 선택되었는지 확인
-        if (type !== 'APPLY' && !reservationModel.id) {
-            alert('수정 또는 삭제할 예약을 먼저 선택해주세요.');
-            return;
-        }
-
-        const newChange: PendingToChange = {
-            id: Date.now(), // 고유한 임시 ID 부여
-            type: type,
-            data: $state.snapshot(reservationModel) // 현재 폼 데이터를 복사해서 저장
-        };
-
-        pendingChanges.push(newChange);
-
-        // 폼 초기화
-        reservationModel.clear();
-        selectedReservation = null;
-    }
-
-    function removePendingToChange(id: number) {
-        pendingChanges = pendingChanges.filter((change) => change.id !== id);
-    }
-
-    function handleFinalSave() {
-        if (pendingChanges.length === 0) {
-            alert('저장할 내역이 없습니다.');
-            return;
-        }
-
-        console.log('--- 최종 저장 시작 ---');
-
-        pendingChanges.forEach((change) => {
-            switch (change.type) {
-                case 'APPLY':
-                    // 실제로는 여기서 서버 API를 호출하여 데이터를 생성합니다.
-                    console.log('[등록 처리]', change.data);
-                    fakeReservation.push(change.data); // 테스트용으로 실제 데이터에 반영
-                    break;
-                case 'EDIT': {
-                    // 실제로는 여기서 서버 API를 호출하여 데이터를 업데이트합니다.
-                    console.log('[수정 처리]', change.data);
-                    const indexToUpdate = fakeReservation.findIndex(r => r.id === change.data.id);
-                    if (indexToUpdate > -1) fakeReservation[indexToUpdate] = change.data;
-                    break;
-                }
-                case 'DELETE':
-                    // 실제로는 여기서 서버 API를 호출하여 데이터를 삭제합니다.
-                    console.log('[삭제 처리]', change.data);
-                    fakeReservation = fakeReservation.filter(r => r.id !== change.data.id);
-                    break;
-            }
-        });
-
-        console.log('--- 모든 내역 처리 완료 ---');
-        alert('모든 변경사항이 저장되었습니다.');
-    }
-
+  console.log('--- 모든 내역 처리 완료 ---');
+  alert('모든 변경사항이 저장되었습니다.');
+}
 </script>
 
     <main class="p-4 bg-gray-100 min-h-screen">

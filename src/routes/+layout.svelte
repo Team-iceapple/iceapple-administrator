@@ -1,10 +1,9 @@
 <script lang="ts">
-    import '@/app.css';
-    import {Header, SideBar} from '$lib/components/ui';
-    import type { LayoutProps } from './$types';
+import '@/app.css';
+import { Header, SideBar } from '$lib/components/ui';
+import type { LayoutProps } from './$types';
 
-    let { data, children }: LayoutProps = $props();
-
+let { data, children }: LayoutProps = $props();
 </script>
 
 <div class="min-h-screen bg-gray-50 ">
