@@ -372,14 +372,14 @@
             <button
               onclick={handleAddRoom}
               disabled={!roomBuilder.name.trim()}
-              class="bg-blue-500 text-white px-4 py-1 rounded-md text-sm transition hover:bg-blue-600 active:scale-95 disabled:bg-gray-300 disabled:cursor-not-allowed"
+              class="bg-blue-500 text-white px-4 py-1 rounded-md text-sm transition hover:bg-gray-500 active:scale-95 disabled:bg-gray-300 disabled:cursor-not-allowed"
             >
               등록
             </button>
             <button
               onclick={handleDeleteSelectedRooms}
               disabled={selectedRoomIds.length === 0}
-              class="bg-red-500 text-white px-4 py-1 rounded-md text-sm transition hover:bg-red-600 active:scale-95 disabled:bg-gray-300 disabled:cursor-not-allowed"
+              class=" bg-blue-500 text-white px-4 py-1 rounded-md text-sm transition hover:bg-gray-500 active:scale-95 disabled:bg-gray-300 disabled:cursor-not-allowed"
             >
               삭제
             </button>
@@ -390,9 +390,9 @@
           <div class="flex justify-between items-center mb-4 border-b pb-2">
             <h3 class="font-bold text-lg">공간 예약 관리</h3>
             <div class="flex space-x-1">
-              <button onclick={() => addPendingToChange('APPLY')} class="bg-blue-500 text-white px-3 py-1 rounded-md text-sm">등록</button>
-              <button onclick={() => addPendingToChange('EDIT')} class="bg-yellow-500 text-white px-3 py-1 rounded-md text-sm">수정</button>
-              <button onclick={() => addPendingToChange('DELETE')} class="bg-red-500 text-white px-3 py-1 rounded-md text-sm">삭제</button>
+              <button onclick={() => addPendingToChange('APPLY')} class= "border-1 border-gray-500 text-black px-3 py-1 hover:bg-gray-300 rounded-md text-sm">등록</button>
+              <button onclick={() => addPendingToChange('EDIT')} class=" border-1 border-gray-500 text-black px-3 py-1 hover:bg-gray-300  rounded-md text-sm">수정</button>
+              <button onclick={() => addPendingToChange('DELETE')} class=" border-1 border-gray-500 text-black px-3 py-1 hover:bg-gray-300 rounded-md text-sm">삭제</button>
             </div>
           </div>
           <div class="space-y-2">
@@ -435,22 +435,19 @@
                 {#each pendingChanges as change (change.id)}
                   <li class="flex items-center justify-between p-2 bg-gray-50 rounded-md">
                     <div>
-                            <span class={`font-bold text-xs px-2 py-1 rounded-full text-white ${
-                                change.type === 'APPLY' ? 'bg-blue-500' :
-                                change.type === 'EDIT' ? 'bg-yellow-500' : 'bg-red-500'
-                            }`}>
+                            <span class="font-bold text-xs px-2 py-1 rounded-full text-white">
                                 {change.type}
                             </span>
                       <span class="ml-2 text-sm">{change.data.room.name} / {change.data.times.join(', ')}</span>
                     </div>
-                    <button onclick={() => removePendingToChange(change.id)} class="text-gray-400 hover:text-red-600 font-bold">X</button>
+                    <button onclick={() => removePendingToChange(change.id)} class="text-gray-500 hover:text-gray-500 font-bold">X</button>
                   </li>
                 {/each}
               </ul>
             {/if}
           </div>
           <div class="flex justify-end mt-3 pt-3 border-t">
-            <button onclick={handleFinalSave} class="px-4 py-2 bg-green-600 text-white rounded-2xl shadow hover:bg-green-700 active:scale-95 transition duration-200">최종 저장</button>
+            <button onclick={handleFinalSave} class="px-4 py-2 bg-blue-500 text-white rounded-md shadow hover:bg-blue-500 active:scale-95 transition duration-200">최종 저장</button>
           </div>
         </div>
       </div>
