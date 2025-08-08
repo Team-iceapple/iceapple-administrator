@@ -1,15 +1,13 @@
-import { API_URL } from '$env/static/private';
+import { API_ENDPOINTS } from '$lib/config/api';
 import { logger } from '$lib/utils/logger';
-
-const FULL_API_URL = new URL('project/files/', API_URL);
 
 type AcceptType = 'png' | 'jpeg' | 'pdf';
 
-function isAcceptType(type: string | null) {
+function isAcceptType(type: string | null): type is AcceptType {
   return type === 'png' || type === 'jpeg' || type === 'pdf';
 }
 
-function toMIMEType(type: AcceptType) {
+function MIMEType(type: AcceptType) {
   if (type === 'png' || type === 'jpeg') return `image/${type}`;
 
   return 'application/pdf';
@@ -18,18 +16,20 @@ function toMIMEType(type: AcceptType) {
 export async function GET({ params, url }) {
   const { id } = params;
   const typeParam = url.searchParams.get('type');
-  const type = isAcceptType(typeParam) ? typeParam : 'png';
+  const mime = isAcceptType(typeParam) ? MIMEType(typeParam) : 'png';
+
+  const endpoint = `${API_ENDPOINTS.PROJECT_FILE}/${id}`;
 
   logger.log('파일 요청', {
-    endpoint: `/project/files/${id}`,
+    endpoint,
     id: id,
-    requestedType: typeParam,
+    MIME: mime,
   });
 
-  const response = await fetch(new URL(id, FULL_API_URL), {
+  const response = await fetch(endpoint, {
     method: 'GET',
     headers: {
-      Accept: toMIMEType(type),
+      Accept: mime,
     },
   });
 
