@@ -1,6 +1,8 @@
 <script lang="ts">
+import { error } from '@sveltejs/kit';
 import { goto } from '$app/navigation';
 import type {
+  DetailProjectGetResponse,
   Member,
   Project,
   ProjectCreateBody,
@@ -9,12 +11,7 @@ import type {
 } from '$lib/types';
 import { generateYears } from '$lib/utils';
 
-const {
-  projects,
-  IMAGE_URL,
-  currentPage: initialCurrentPage,
-  maxPage,
-} = $props();
+const { projects, currentPage: initialCurrentPage, maxPage } = $props();
 
 const MIN_PAGE = 1;
 let currentPage = $derived<number>(initialCurrentPage);
@@ -104,25 +101,35 @@ function handleDeleteMember(index: number) {
   project.members.splice(index, 1);
 }
 
-function selectProject(project: Project) {
-  if (project.id === selectedProject?.id) {
+async function selectProject(projectId: string) {
+  if (projectId === selectedProject?.id) {
     selectedProject = null;
     resetProject();
     return;
   }
 
+  const response = await fetch(`api/project/${projectId}`);
+
+  const body: DetailProjectGetResponse = await response.json();
+
+  if (!response.ok) error(404, body.message);
+
+  const project = body.work;
   selectedProject = project;
   setProject(project);
 }
 
-function handleProjectItem(e: KeyboardEvent | MouseEvent, project: Project) {
+async function handleProjectItem(
+  e: KeyboardEvent | MouseEvent,
+  projectId: string,
+) {
   const isAllow =
     e instanceof MouseEvent ||
     (e instanceof KeyboardEvent && (e.key === 'Enter' || e.key === ' '));
 
   if (isAllow) {
     e.preventDefault();
-    selectProject(project);
+    await selectProject(projectId);
   }
 }
 
@@ -147,12 +154,12 @@ function goToPage(page: number) {
         <div
           class="flex gap-2 p-2 cursor-pointer border border-gray-300 rounded-md shadow-sm hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-400"
           class:bg-blue-100={project.id === selectedProject?.id}
-          onclick={(e) => handleProjectItem(e, project)}
-          onkeydown={(e) => handleProjectItem(e, project)}
+          onclick={(e) => handleProjectItem(e, project.id)}
+          onkeydown={(e) => handleProjectItem(e, project.id)}
           role="button"
           tabindex={0}
         >
-          <img class="size-28 rounded-sm border border-gray-300" src={`${IMAGE_URL}/${project.thumbnail}`} alt={`${project.name} Thumbnail`} />
+          <img class="size-28 rounded-sm border border-gray-300" src={`api/project/files/${project.thumbnail}?type=png`} alt={`${project.name} Thumbnail`} />
           <div class="flex flex-col text-left">
             <p class="text-lg font-semibold text-gray-800">{project.name}</p>
             <p class="text-sm text-gray-500">{project.members.map((member) => member.name)}</p>

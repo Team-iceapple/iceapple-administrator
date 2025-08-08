@@ -32,3 +32,13 @@ export type ProjectCreateBody = {
 };
 
 export type ProjectUpdateBody = Partial<ProjectCreateBody>;
+
+export type ProjectGetResponse = {
+  works: Project[];
+  message?: string;
+};
+
+export type DetailProjectGetResponse = {
+  work: Project;
+  message?: string;
+};
