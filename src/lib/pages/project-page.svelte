@@ -1,17 +1,16 @@
 <script lang="ts">
 import { error } from '@sveltejs/kit';
-import { goto } from '$app/navigation';
+import { applyAction, enhance } from '$app/forms';
+import { goto, invalidateAll } from '$app/navigation';
 import type {
   DetailProjectGetResponse,
   Member,
   Project,
-  ProjectCreateBody,
   ProjectCreateFile,
-  ProjectUpdateBody,
 } from '$lib/types';
 import { generateYears } from '$lib/utils';
 
-const { projects, currentPage: initialCurrentPage, maxPage } = $props();
+const { form, projects, currentPage: initialCurrentPage, maxPage } = $props();
 
 const MIN_PAGE = 1;
 let currentPage = $derived<number>(initialCurrentPage);
@@ -47,39 +46,12 @@ function resetProject() {
 
   projectFile.pdf = undefined;
   projectFile.thumbnail = undefined;
+
+  selectedProject = null;
 }
 
 function setProject(newProject: Project) {
   project = { ...newProject };
-}
-
-function handleSave() {
-  if (selectedProject) {
-    console.info('수정 요청');
-    const updateBody = $state.snapshot<ProjectUpdateBody>({
-      name: project.name,
-      team_name: project.team_name,
-      members: project.members,
-      description: project.description,
-      main_url: project.main_url,
-      year: project.year,
-    });
-
-    console.info(updateBody);
-  } else {
-    console.info('생성 요청');
-
-    const createBody = $state.snapshot<ProjectCreateBody>({
-      name: project.name,
-      team_name: project.team_name,
-      members: project.members,
-      description: project.description,
-      main_url: project.main_url,
-      year: project.year,
-    });
-
-    console.info(createBody);
-  }
 }
 
 let memberName = $state('');
@@ -201,7 +173,20 @@ function goToPage(page: number) {
   <div class="border-l-2 border-l-gray-100 mx-2"></div>
 
   <!-- 우측 패널 -->
-  <div class="flex flex-col basis-1/2">
+  <form class="flex flex-col basis-1/2"
+        enctype="multipart/form-data"
+        method="POST"
+        action={`/projects?type=${!!selectedProject ? 'update' : 'create'}${selectedProject ? `&id=${selectedProject.id}` : ''}`}
+        use:enhance={() => {
+            return async ({ result }) =>{
+                await applyAction(result);
+                if (result.type === 'success') {
+                    resetProject();
+                    await invalidateAll();
+                }
+            }
+        }}
+  >
     <h2 class="font-bold text-2xl border-b border-gray-300">세부 정보</h2>
     <!-- 세부 정보 목록 -->
     <div class="flex flex-col p-2 gap-2">
@@ -211,6 +196,7 @@ function goToPage(page: number) {
                for="year-input">년도</label>
         <select class="p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                 id='year-input'
+                name="year"
                 bind:value={project.year}>
           {#each generateYears(new Date().getFullYear() - 5) as yearNum}
             <option value={yearNum}>{yearNum}</option>
@@ -224,6 +210,7 @@ function goToPage(page: number) {
                for="name-input">제목</label>
         <input class="p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                id="name-input"
+               name="name"
                type="text"
                bind:value={project.name}
         />
@@ -232,9 +219,10 @@ function goToPage(page: number) {
       <!-- 팀 이름 -->
       <div class="flex flex-col">
         <label class="text-base"
-               for="name-input">팀 이름</label>
+               for="team-name-input">팀 이름</label>
         <input class="p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
-               id="name-input"
+               id="team-name-input"
+               name="team_name"
                type="text"
                bind:value={project.team_name}
         />
@@ -259,6 +247,7 @@ function goToPage(page: number) {
                    placeholder="팀원 세부 정보.."
             />
             <button class="px-3 py-1 border border-gray-400 rounded-sm text-gray-700 hover:bg-gray-100 active:ring-1 active:ring-blue-300 transition-colors"
+                    type="button"
                     onclick={handleAddMember}
             >
               추가
@@ -268,6 +257,11 @@ function goToPage(page: number) {
 
         <!-- 팀원 목록 -->
           <div class="border border-gray-300 rounded">
+            <input type="hidden"
+                   name="members"
+                   value={JSON.stringify(project.members)}
+            />
+
             <table class="table-fixed w-full text-sm">
               <thead>
                 <tr class="border-b border-gray-300 bg-slate-50 text-left">
@@ -285,6 +279,7 @@ function goToPage(page: number) {
                     <td class="relative w-1/2 px-2 py-1">
                       {member.extra}
                       <button class="absolute right-2 text-red-500"
+                              type="button"
                               onclick={() => handleDeleteMember(i)}
                       >X</button>
                     </td>
@@ -302,8 +297,21 @@ function goToPage(page: number) {
                for="description-text-area">설명</label>
         <textarea class="p-1 border border-gray-300 rounded-sm h-24 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   id="description-text-area"
+                  name="description"
                   bind:value={project.description}
         ></textarea>
+      </div>
+
+      <!-- 메인 URL (QR 코드 용 주소) -->
+      <div class="flex flex-col">
+        <label class="text-base"
+               for="main-url-input">메인 URL</label>
+        <input class="p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+               id="main-url-input"
+               name="main_url"
+               type="text"
+               bind:value={project.main_url}
+        />
       </div>
 
       <!-- 썸네일 업로드 -->
@@ -313,6 +321,7 @@ function goToPage(page: number) {
         <input class="p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                type="file"
                id="thumbnail-upload"
+               name="thumbnail"
                bind:value={projectFile.thumbnail}
         />
       </div>
@@ -324,15 +333,16 @@ function goToPage(page: number) {
         <input class="p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                type="file"
                id="pdf-upload"
+               name="pdf"
                bind:value={projectFile.pdf}
         />
       </div>
     </div>
 
     <button class="self-end px-3 py-1 border border-gray-400 rounded-sm text-gray-700 hover:bg-gray-100 active:ring-1 active:ring-blue-300 transition-colors"
-            onclick={handleSave}
+            type="submit"
     >
       {selectedProject ? '저장' : '생성'}
     </button>
-  </div>
+  </form>
 </div>
