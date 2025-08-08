@@ -7,7 +7,6 @@ const { data }: PageProps = $props();
 
 <ProjectPage
   projects={data.projects}
-  IMAGE_URL={data.IMAGE_URL}
   currentPage={data.currentPage}
   maxPage={data.maxPage}
 />

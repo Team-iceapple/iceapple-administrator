@@ -11,12 +11,7 @@ import type {
 } from '$lib/types';
 import { generateYears } from '$lib/utils';
 
-const {
-  projects,
-  IMAGE_URL,
-  currentPage: initialCurrentPage,
-  maxPage,
-} = $props();
+const { projects, currentPage: initialCurrentPage, maxPage } = $props();
 
 const MIN_PAGE = 1;
 let currentPage = $derived<number>(initialCurrentPage);

@@ -1,9 +1,6 @@
 import { error } from '@sveltejs/kit';
-import { API_URL } from '$env/static/private';
 import type { ProjectGetResponse } from '$lib/types';
 import type { PageServerLoad } from './$types';
-
-const IMAGE_URL = new URL('project/files', API_URL).toString();
 
 const PAGE_SIZE = 5;
 
@@ -24,7 +21,6 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
 
   return {
     projects,
-    IMAGE_URL,
     currentPage,
     maxPage,
   };
