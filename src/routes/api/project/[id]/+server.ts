@@ -16,3 +16,20 @@ export async function GET({ params }) {
 
   return response;
 }
+
+export async function DELETE({ params }) {
+  const { id } = params;
+
+  const endpoint = `${API_ENDPOINTS.PROJECT_WORK}/${id}`;
+
+  logger.log('프로젝트 삭제 요청', {
+    endpoint,
+    id: id,
+  });
+
+  const response = fetch(endpoint, {
+    method: 'DELETE',
+  });
+
+  return response;
+}

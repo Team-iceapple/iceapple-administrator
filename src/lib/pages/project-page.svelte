@@ -105,6 +105,23 @@ async function handleProjectItem(
   }
 }
 
+async function handleDeleteProject() {
+  if (!selectedProject) return;
+  if (!confirm(`정말로 ${selectedProject.name}을(를) 삭제하시겠습니까?`))
+    // 추후 커스텀 모달로 변경 가능
+    return;
+
+  const response = await fetch(`api/project/${selectedProject.id}`, {
+    method: 'DELETE',
+  });
+
+  if (!response.ok) error(404, (await response.json()).message);
+
+  resetProject();
+  await invalidateAll();
+  if (currentPage > maxPage) goToPage(maxPage); // 삭제시 최대 페이지가 줄어드는 경우 처리
+}
+
 function goToPage(page: number) {
   const isValidPage = MIN_PAGE <= page && page <= maxPage;
 
@@ -339,10 +356,20 @@ function goToPage(page: number) {
       </div>
     </div>
 
-    <button class="self-end px-3 py-1 border border-gray-400 rounded-sm text-gray-700 hover:bg-gray-100 active:ring-1 active:ring-blue-300 transition-colors"
-            type="submit"
-    >
-      {selectedProject ? '저장' : '생성'}
-    </button>
+    <div class="px-2 flex justify-between">
+      <button class="px-3 py-1 border border-gray-400 rounded-sm text-gray-700 hover:bg-gray-100 hover:text-red-500 active:ring-1 active:ring-blue-300 transition-colors duration-300"
+              class:invisible={!selectedProject}
+              type="button"
+              onclick={handleDeleteProject}
+      >
+        삭제
+      </button>
+
+      <button class="px-3 py-1 border border-gray-400 rounded-sm text-gray-700 hover:bg-gray-100 active:ring-1 active:ring-blue-300 transition-colors duration-300"
+              type="submit"
+      >
+        {selectedProject ? '저장' : '생성'}
+      </button>
+    </div>
   </form>
 </div>
