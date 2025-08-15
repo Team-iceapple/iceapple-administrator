@@ -1,13 +1,9 @@
 <script lang="ts">
-import { error } from '@sveltejs/kit';
+import { type ActionResult, error } from '@sveltejs/kit';
 import { applyAction, enhance } from '$app/forms';
 import { goto, invalidateAll } from '$app/navigation';
-import type {
-  DetailProjectGetResponse,
-  Member,
-  Project,
-  ProjectCreateFile,
-} from '$lib/types';
+import { MemberModel, ProjectFormModel } from '$lib/models/projects';
+import type { DetailProjectGetResponse, Project } from '$lib/types';
 import { generateYears } from '$lib/utils';
 
 const { form, projects, currentPage: initialCurrentPage, maxPage } = $props();
@@ -17,66 +13,16 @@ let currentPage = $derived<number>(initialCurrentPage);
 let currentProjects = $derived<Project[]>(projects);
 let selectedProject = $state<Project | null>(null);
 
-let project = $state<Project>({
-  id: '',
-  name: '',
-  team_name: '',
-  members: [],
-  description: '',
-  thumbnail: '',
-  year: new Date().getFullYear(),
-  main_url: '',
-  pdf_url: '',
-});
-
-let projectFile = $state<Partial<ProjectCreateFile>>({
-  pdf: undefined,
-  thumbnail: undefined,
-});
-
-function resetProject() {
-  project.name = '';
-  project.team_name = '';
-  project.members = [];
-  project.description = '';
-  project.main_url = '';
-  project.year = new Date().getFullYear();
-  project.pdf_url = '';
-  project.thumbnail = '';
-
-  projectFile.pdf = undefined;
-  projectFile.thumbnail = undefined;
-
-  selectedProject = null;
-}
-
-function setProject(newProject: Project) {
-  project = { ...newProject };
-}
-
-let memberName = $state('');
-let memberExtra = $state('');
-
-function handleAddMember() {
-  const member: Member = {
-    name: memberName,
-    extra: memberExtra,
-  };
-
-  project.members.push(member);
-
-  memberName = '';
-  memberExtra = '';
-}
-
-function handleDeleteMember(index: number) {
-  project.members.splice(index, 1);
-}
+const memberModel = new MemberModel();
+const member = $derived(memberModel.member);
+const projectFormModel = new ProjectFormModel(memberModel);
+const project = $derived(projectFormModel.project);
+const projectFile = $derived(projectFormModel.projectFile);
 
 async function selectProject(projectId: string) {
   if (projectId === selectedProject?.id) {
     selectedProject = null;
-    resetProject();
+    projectFormModel.clear();
     return;
   }
 
@@ -88,7 +34,7 @@ async function selectProject(projectId: string) {
 
   const project = body.work;
   selectedProject = project;
-  setProject(project);
+  projectFormModel.setProject(project);
 }
 
 async function handleProjectItem(
@@ -117,7 +63,7 @@ async function handleDeleteProject() {
 
   if (!response.ok) error(404, (await response.json()).message);
 
-  resetProject();
+  projectFormModel.clear();
   await invalidateAll();
   if (currentPage > maxPage) goToPage(maxPage); // 삭제시 최대 페이지가 줄어드는 경우 처리
 }
@@ -132,6 +78,15 @@ function goToPage(page: number) {
     });
   }
 }
+
+async function afterProjectCreateOrUpdate(result: ActionResult) {
+  await applyAction(result);
+  if (result.type === 'success') {
+    selectedProject = null;
+    projectFormModel.clear();
+    await invalidateAll();
+  }
+}
 </script>
 
 <div class="flex">
@@ -139,7 +94,7 @@ function goToPage(page: number) {
   <div class="basis-1/2">
     <div class="flex flex-col gap-1 min-h-[720px] ">
       {#each currentProjects as project (project.id)}
-        <!-- 예시 수정: 목록 아이템 -->
+        <!-- 목록 아이템 -->
         <div
           class="flex gap-2 p-2 cursor-pointer border border-gray-300 rounded-md shadow-sm hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-400"
           class:bg-blue-100={project.id === selectedProject?.id}
@@ -194,15 +149,7 @@ function goToPage(page: number) {
         enctype="multipart/form-data"
         method="POST"
         action={`/projects?type=${!!selectedProject ? 'update' : 'create'}${selectedProject ? `&id=${selectedProject.id}` : ''}`}
-        use:enhance={() => {
-            return async ({ result }) =>{
-                await applyAction(result);
-                if (result.type === 'success') {
-                    resetProject();
-                    await invalidateAll();
-                }
-            }
-        }}
+        use:enhance={() => ({ result }) => afterProjectCreateOrUpdate(result)}
   >
     <h2 class="font-bold text-2xl border-b border-gray-300">세부 정보</h2>
     <!-- 세부 정보 목록 -->
@@ -254,18 +201,18 @@ function goToPage(page: number) {
           <div class="flex-1 flex gap-2">
             <input class="p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                    id="member-name-input"
-                   bind:value={memberName}
+                   bind:value={member.name}
                    type="text"
                    placeholder="팀원 이름.."
             />
             <input class="p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
-                   bind:value={memberExtra}
+                   bind:value={member.extra}
                    type="text"
                    placeholder="팀원 세부 정보.."
             />
             <button class="px-3 py-1 border border-gray-400 rounded-sm text-gray-700 hover:bg-gray-100 active:ring-1 active:ring-blue-300 transition-colors"
                     type="button"
-                    onclick={handleAddMember}
+                    onclick={projectFormModel.addMember}
             >
               추가
             </button>
@@ -297,7 +244,7 @@ function goToPage(page: number) {
                       {member.extra}
                       <button class="absolute right-2 text-red-500"
                               type="button"
-                              onclick={() => handleDeleteMember(i)}
+                              onclick={() => projectFormModel.deleteMember(i)}
                       >X</button>
                     </td>
                   </tr>
@@ -358,7 +305,7 @@ function goToPage(page: number) {
 
     <div class="px-2 flex justify-between">
       <button class="px-3 py-1 border border-gray-400 rounded-sm text-gray-700 hover:bg-gray-100 hover:text-red-500 active:ring-1 active:ring-blue-300 transition-colors duration-300"
-              class:invisible={!selectedProject}
+              class:invisible={selectedProject === null}
               type="button"
               onclick={handleDeleteProject}
       >
