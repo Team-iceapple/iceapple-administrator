@@ -19,12 +19,12 @@ function handleLogout() {
 <aside class="fixed left-0 top-0 z-40 h-screen w-64 bg-gray-50  border-r border-gray-200 ">
   <div class="flex h-full flex-col">
     <!-- 로고 영역 -->
-    <div class="flex h-16 items-center justify-center border-b border-gray-200 ">
+    <div class="flex h-20 items-center justify-center border-b border-gray-200 ">
       <div class="flex items-center space-x-3 gap-2">
         <img src="/logo.webp" alt="Logo" class="h-13 w-auto"/>
         <div class="flex flex-col">
           <span class="text-lg font-bold text-gray-900 e">Kiosk Admin</span>
-          <p class="text-sm text-gray-500 ">모바일융합공학과</p>
+          <p class="text-2xl text-gray-500 ">모바일융합공학과</p>
         </div>
       </div>
     </div>
@@ -33,7 +33,7 @@ function handleLogout() {
       {#each menuItems as item}
         <a
           href={item.href}
-          class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200
+          class="flex items-center px-4 py-3 text-2xl font-medium rounded-lg transition-colors duration-200
 						? 'bg-blue-100 text-blue-700'
 						: 'text-gray-700 hover:bg-gray-100'}"
         >
@@ -47,7 +47,7 @@ function handleLogout() {
     <div class="border-t border-gray-200  p-4">
       <button
         onclick={handleLogout}
-        class="flex items-center w-full px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50  rounded-lg transition-colors duration-200"
+        class="flex items-center w-full px-4 py-3 text-2xl font-medium text-red-600 hover:bg-red-50  rounded-lg transition-colors duration-200"
       >
         <img src="/images/slidebar/logout.svg" alt="로그아웃 아이콘" class="mr-3 h-6 w-6"/>
         로그아웃
