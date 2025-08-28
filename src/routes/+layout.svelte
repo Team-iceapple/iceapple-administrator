@@ -12,7 +12,7 @@ let { data, children }: LayoutProps = $props();
   <div class="ml-64">
     <Header title={data.pageTitle}/>
 
-    <main class="p-6">
+    <main class="p-4">
       {@render children()}
     </main>
   </div>
