@@ -92,7 +92,7 @@ async function afterProjectCreateOrUpdate(result: ActionResult) {
 <div class="flex">
   <!-- 좌측 패널 -->
   <div class="basis-1/2">
-    <div class="flex flex-col gap-4.5 min-h-[1140px] ">
+    <div class="flex flex-col gap-4 min-h-[1140px] ">
       {#each currentProjects as project (project.id)}
         <!-- 목록 아이템 -->
         <div
