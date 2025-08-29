@@ -92,7 +92,7 @@ async function afterProjectCreateOrUpdate(result: ActionResult) {
 <div class="flex">
   <!-- 좌측 패널 -->
   <div class="basis-1/2">
-    <div class="flex flex-col gap-4 min-h-[1340px] ">
+    <div class="flex flex-col gap-4.5 min-h-[1140px] ">
       {#each currentProjects as project (project.id)}
         <!-- 목록 아이템 -->
         <div
@@ -103,9 +103,9 @@ async function afterProjectCreateOrUpdate(result: ActionResult) {
           role="button"
           tabindex={0}
         >
-          <img class="size-56 rounded-sm border border-gray-300" src={`api/project/files/${project.thumbnail}?type=png`} alt={`${project.name} Thumbnail`} />
+          <img class="size-48 rounded-sm border border-gray-300" src={`api/project/files/${project.thumbnail}?type=png`} alt={`${project.name} Thumbnail`} />
           <div class="flex flex-col text-left">
-            <p class="text-4xl font-semibold text-gray-800">{project.name}</p>
+            <p class="text-2xl font-semibold text-gray-800">{project.name}</p>
             <p class="text-xl text-gray-500">{project.members.map((member) => member.name)}</p>
           </div>
         </div>
@@ -155,7 +155,7 @@ async function afterProjectCreateOrUpdate(result: ActionResult) {
     <!-- 세부 정보 목록 -->
     <div class="flex flex-col p-4 gap-6">
       <!-- 년도 -->
-      <div class="flex items-center gap-2 text-3xl">
+      <div class="flex items-center gap-2 text-2xl">
         <label for="year-input">년도</label>
         <select class="flex-1 p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                 id='year-input'
@@ -168,7 +168,7 @@ async function afterProjectCreateOrUpdate(result: ActionResult) {
       </div>
 
       <!-- 프로젝트 이름 -->
-      <div class="flex items-center gap-2 text-3xl">
+      <div class="flex items-center gap-2 text-2xl">
         <label for="name-input">제목</label>
         <input class="flex-1 p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                id="name-input"
@@ -179,7 +179,7 @@ async function afterProjectCreateOrUpdate(result: ActionResult) {
       </div>
 
       <!-- 팀 이름 -->
-      <div class="flex items-center gap-2 text-3xl">
+      <div class="flex items-center gap-2 text-2xl">
         <label for="team-name-input">팀 이름</label>
         <input class="flex-1 p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                id="team-name-input"
@@ -191,7 +191,7 @@ async function afterProjectCreateOrUpdate(result: ActionResult) {
 
       <!-- 팀원 -->
       <div class="flex flex-col gap-2">
-        <div class="flex items-center gap-2 text-3xl">
+        <div class="flex items-center gap-2 text-2xl">
           <label for="member-name-input">팀원</label>
 
           <div class="flex-1 flex gap-2">
@@ -222,7 +222,7 @@ async function afterProjectCreateOrUpdate(result: ActionResult) {
                    value={JSON.stringify(project.members)}
             />
 
-            <table class="table-fixed w-full text-3xl">
+            <table class="table-fixed w-full text-2xl">
               <thead>
                 <tr class="border-b border-gray-300 bg-slate-50 text-left">
                   <th class="w-1/8 px-2 py-1 border-r border-gray-300">이름</th>
@@ -252,7 +252,7 @@ async function afterProjectCreateOrUpdate(result: ActionResult) {
       </div>
 
       <!-- 프로젝트 설명 -->
-      <div class="flex flex-col text-3xl gap-2">
+      <div class="flex flex-col text-2xl gap-2">
         <label for="description-text-area">설명</label>
         <textarea class="p-1 border border-gray-300 rounded-sm h-24 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   id="description-text-area"
@@ -262,7 +262,7 @@ async function afterProjectCreateOrUpdate(result: ActionResult) {
       </div>
 
       <!-- 메인 URL (QR 코드 용 주소) -->
-      <div class="flex items-center gap-2 text-3xl">
+      <div class="flex items-center gap-2 text-2xl">
         <label for="main-url-input">메인 URL</label>
         <input class="flex-1 p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                id="main-url-input"
@@ -273,7 +273,7 @@ async function afterProjectCreateOrUpdate(result: ActionResult) {
       </div>
 
       <!-- 썸네일 업로드 -->
-      <div class="flex items-center gap-2 text-3xl">
+      <div class="flex items-center gap-2 text-2xl">
         <label for="thumbnail-upload">썸네일 이미지</label>
         <input class="flex-1 p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                type="file"
@@ -284,7 +284,7 @@ async function afterProjectCreateOrUpdate(result: ActionResult) {
       </div>
 
       <!-- PDF 파일 업로드 -->
-      <div class="flex items-center gap-2 text-3xl">
+      <div class="flex items-center gap-2 text-2xl">
         <label for="pdf-upload">포스터 PDF</label>
         <input class="flex-1 p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                type="file"
