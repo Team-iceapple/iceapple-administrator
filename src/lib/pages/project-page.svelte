@@ -93,26 +93,8 @@ async function afterProjectCreateOrUpdate(result: ActionResult) {
   <!-- 좌측 패널 -->
   <div class="basis-1/2">
     <div class="flex flex-col gap-4 min-h-[1140px] ">
-      {#each currentProjects as project (project.id)}
-        <!-- 목록 아이템 -->
-        <div
-          class="flex gap-2 p-2 cursor-pointer border border-gray-300 rounded-md shadow-sm hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          class:bg-blue-100={project.id === selectedProject?.id}
-          onclick={(e) => handleProjectItem(e, project.id)}
-          onkeydown={(e) => handleProjectItem(e, project.id)}
-          role="button"
-          tabindex={0}
-        >
-          <img class="size-48 rounded-sm border border-gray-300" src={`api/project/files/${project.thumbnail}?type=png`} alt={`${project.name} Thumbnail`} />
-          <div class="flex flex-col text-left">
-            <p class="text-2xl font-semibold text-gray-800">{project.name}</p>
-            <p class="text-xl text-gray-500">{project.members.map((member) => member.name)}</p>
-          </div>
-        </div>
-      {/each}
-
-      <div class="mt-auto mx-auto flex items-center gap-4 text-gray-700 text-2xl">
-        <button class="px-2 py-2 border border-gray-400 rounded-sm
+      <div class="mt-2 mx-auto flex items-center gap-4 text-gray-700 text-xl">
+        <button class="px-2 py-1 border border-gray-400 rounded-sm
                  hover:bg-gray-100 active:ring-1 active:ring-blue-300
                  transition-colors
                  disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-300 disabled:cursor-not-allowed"
@@ -138,6 +120,23 @@ async function afterProjectCreateOrUpdate(result: ActionResult) {
           다음
         </button>
       </div>
+      {#each currentProjects as project (project.id)}
+        <!-- 목록 아이템 -->
+        <div
+          class="flex gap-2 p-2 cursor-pointer border border-gray-300 rounded-md shadow-sm hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          class:bg-blue-100={project.id === selectedProject?.id}
+          onclick={(e) => handleProjectItem(e, project.id)}
+          onkeydown={(e) => handleProjectItem(e, project.id)}
+          role="button"
+          tabindex={0}
+        >
+          <img class="size-48 rounded-sm border border-gray-300" src={`api/project/files/${project.thumbnail}?type=png`} alt={`${project.name} Thumbnail`} />
+          <div class="flex flex-col text-left">
+            <p class="text-2xl font-semibold text-gray-800">{project.name}</p>
+            <p class="text-xl text-gray-500">{project.members.map((member) => member.name)}</p>
+          </div>
+        </div>
+      {/each}
     </div>
   </div>
 
@@ -151,17 +150,33 @@ async function afterProjectCreateOrUpdate(result: ActionResult) {
         action={`/projects?type=${!!selectedProject ? 'update' : 'create'}${selectedProject ? `&id=${selectedProject.id}` : ''}`}
         use:enhance={() => ({ result }) => afterProjectCreateOrUpdate(result)}
   >
-    <h2 class="font-bold text-4xl p-2 border-b border-gray-300">세부 정보</h2>
+    <div class="p-2 flex gap-4 justify-between items-center border-b border-gray-300">
+      <h2 class="font-bold text-2xl">세부 정보</h2>
+      <div class="px-2 flex text-2xl gap-4">
+        <button class="px-3 py-1 border border-gray-400 rounded-sm text-gray-700 hover:bg-gray-100 hover:text-red-500 active:ring-1 active:ring-blue-300 transition-colors duration-300"
+                class:invisible={selectedProject === null}
+                type="button"
+                onclick={handleDeleteProject}
+        >
+          삭제
+        </button>
+        <button class="px-3 py-1 border border-gray-400 rounded-sm text-gray-700 hover:bg-gray-100 active:ring-1 active:ring-blue-300 transition-colors duration-300"
+                type="submit"
+        >
+          {selectedProject ? '저장' : '생성'}
+        </button>
+      </div>
+    </div>
     <!-- 세부 정보 목록 -->
     <div class="flex flex-col p-4 gap-6">
       <!-- 년도 -->
       <div class="flex items-center gap-2 text-2xl">
-        <label for="year-input">년도</label>
-        <select class="flex-1 p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+        <label class="w-36 text-right" for="year-input">년도</label>
+        <select class="max-w-24 flex-1 p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                 id='year-input'
                 name="year"
                 bind:value={project.year}>
-          {#each generateYears(new Date().getFullYear() - 5) as yearNum}
+          {#each generateYears(new Date().getFullYear() - 1, 10) as yearNum}
             <option value={yearNum}>{yearNum}</option>
           {/each}
         </select>
@@ -169,7 +184,7 @@ async function afterProjectCreateOrUpdate(result: ActionResult) {
 
       <!-- 프로젝트 이름 -->
       <div class="flex items-center gap-2 text-2xl">
-        <label for="name-input">제목</label>
+        <label class="w-36 text-right" for="name-input">제목</label>
         <input class="flex-1 p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                id="name-input"
                name="name"
@@ -180,7 +195,7 @@ async function afterProjectCreateOrUpdate(result: ActionResult) {
 
       <!-- 팀 이름 -->
       <div class="flex items-center gap-2 text-2xl">
-        <label for="team-name-input">팀 이름</label>
+        <label class="w-36 text-right" for="team-name-input">팀 이름</label>
         <input class="flex-1 p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                id="team-name-input"
                name="team_name"
@@ -192,7 +207,7 @@ async function afterProjectCreateOrUpdate(result: ActionResult) {
       <!-- 팀원 -->
       <div class="flex flex-col gap-2">
         <div class="flex items-center gap-2 text-2xl">
-          <label for="member-name-input">팀원</label>
+          <label class="w-36 text-right" for="member-name-input">팀원</label>
 
           <div class="flex-1 flex gap-2">
             <input class="p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
@@ -216,7 +231,7 @@ async function afterProjectCreateOrUpdate(result: ActionResult) {
         </div>
 
         <!-- 팀원 목록 -->
-          <div class="border border-gray-300 rounded">
+          <div class="ml-38 border border-gray-300 rounded">
             <input type="hidden"
                    name="members"
                    value={JSON.stringify(project.members)}
@@ -225,8 +240,8 @@ async function afterProjectCreateOrUpdate(result: ActionResult) {
             <table class="table-fixed w-full text-2xl">
               <thead>
                 <tr class="border-b border-gray-300 bg-slate-50 text-left">
-                  <th class="w-1/8 px-2 py-1 border-r border-gray-300">이름</th>
-                  <th class="w-1/2 px-2 py-1">세부 정보</th>
+                  <th class="w-1/8 px-2 py-1 border-r border-gray-300 font-normal">이름</th>
+                  <th class="w-1/2 px-2 py-1 font-normal">세부 정보</th>
                 </tr>
               </thead>
             </table>
@@ -234,7 +249,7 @@ async function afterProjectCreateOrUpdate(result: ActionResult) {
               <table class="table-fixed w-full text-sm">
                 <tbody>
                 {#each project.members as member, i (i)}
-                  <tr class="not-first:border-t last:border-b border-gray-300 text-3xl">
+                  <tr class="not-first:border-t last:border-b border-gray-300 text-xl">
                     <td class="w-1/8 px-2 py-1 border-r border-gray-300">{member.name}</td>
                     <td class="relative w-1/2 px-2 py-1">
                       {member.extra}
@@ -252,9 +267,9 @@ async function afterProjectCreateOrUpdate(result: ActionResult) {
       </div>
 
       <!-- 프로젝트 설명 -->
-      <div class="flex flex-col text-2xl gap-2">
-        <label for="description-text-area">설명</label>
-        <textarea class="p-1 border border-gray-300 rounded-sm h-24 focus:outline-none focus:ring-1 focus:ring-blue-500"
+      <div class="flex text-2xl gap-2">
+        <label class="w-36 text-right" for="description-text-area">설명</label>
+        <textarea class="flex-1 p-1 border border-gray-300 rounded-sm h-24 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   id="description-text-area"
                   name="description"
                   bind:value={project.description}
@@ -263,7 +278,7 @@ async function afterProjectCreateOrUpdate(result: ActionResult) {
 
       <!-- 메인 URL (QR 코드 용 주소) -->
       <div class="flex items-center gap-2 text-2xl">
-        <label for="main-url-input">메인 URL</label>
+        <label class="w-36 text-right" for="main-url-input">메인 URL</label>
         <input class="flex-1 p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                id="main-url-input"
                name="main_url"
@@ -274,7 +289,7 @@ async function afterProjectCreateOrUpdate(result: ActionResult) {
 
       <!-- 썸네일 업로드 -->
       <div class="flex items-center gap-2 text-2xl">
-        <label for="thumbnail-upload">썸네일 이미지</label>
+        <label class="w-36 text-right" for="thumbnail-upload">썸네일 이미지</label>
         <input class="flex-1 p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                type="file"
                id="thumbnail-upload"
@@ -285,7 +300,7 @@ async function afterProjectCreateOrUpdate(result: ActionResult) {
 
       <!-- PDF 파일 업로드 -->
       <div class="flex items-center gap-2 text-2xl">
-        <label for="pdf-upload">포스터 PDF</label>
+        <label class="w-36 text-right" for="pdf-upload">포스터 PDF</label>
         <input class="flex-1 p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                type="file"
                id="pdf-upload"
@@ -293,22 +308,6 @@ async function afterProjectCreateOrUpdate(result: ActionResult) {
                bind:value={projectFile.pdf}
         />
       </div>
-    </div>
-
-    <div class="mt-auto px-2 flex justify-between text-2xl">
-      <button class="px-3 py-1 border border-gray-400 rounded-sm text-gray-700 hover:bg-gray-100 hover:text-red-500 active:ring-1 active:ring-blue-300 transition-colors duration-300"
-              class:invisible={selectedProject === null}
-              type="button"
-              onclick={handleDeleteProject}
-      >
-        삭제
-      </button>
-
-      <button class="px-3 py-1 border border-gray-400 rounded-sm text-gray-700 hover:bg-gray-100 active:ring-1 active:ring-blue-300 transition-colors duration-300"
-              type="submit"
-      >
-        {selectedProject ? '저장' : '생성'}
-      </button>
     </div>
   </form>
 </div>
