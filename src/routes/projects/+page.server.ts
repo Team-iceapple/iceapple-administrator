@@ -84,5 +84,32 @@ export const actions = {
         message: '성공적으로 수정되었습니다.',
       };
     }
+
+      if (type === 'delete') {
+          logger.log('delete 액션');
+          const id = url.searchParams.get('id');
+
+          if (id === null)
+              return fail(401, {
+                  success: false,
+                  message: '잘못된 요청입니다.',
+              });
+
+          const response = await fetch(`${API_ENDPOINTS.PROJECT_WORK}/${id}`, {
+              method: 'DELETE',
+              body: formData,
+          });
+
+          if (!response.ok)
+              return fail(response.status, {
+                  success: false,
+                  message: (await response.json()).message,
+              });
+
+          return {
+              success: true,
+              message: '성공적으로 삭제되었습니다.',
+          };
+      }
   },
 } satisfies Actions;

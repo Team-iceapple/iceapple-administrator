@@ -1,7 +1,8 @@
-export type Room = {
+export type Place = {
   id: string;
   name: string;
-  description?: string | null;
+  description: string;
+  count: number | null;
 };
 
 export type Student = {
@@ -11,18 +12,26 @@ export type Student = {
 };
 
 export type Reservation = {
-  id: string;
-  times: string[];
-  date: Date;
-  room: Room;
-  student: Student;
-  description?: string | null;
+    id: string;
+    times: number[];
+    student_number: string;
+    phone_number: string;
+    place: {
+        id: string;
+        name: string;
+        count: number;
+    };
 };
 
-export type ChangeType = 'APPLY' | 'EDIT' | 'DELETE';
+export type ReservationForm = {
+    id: string;
+    date: Date;
+    place_name: string;
+    times: number[];
+    user_number: string;
+    phone_number: string;
+}
 
-export type PendingToChange = {
-  id: number;
-  type: ChangeType;
-  data: Reservation;
+export type ReservationGetResponse = {
+    reservations: Reservation[];
 };
