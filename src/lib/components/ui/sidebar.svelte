@@ -21,10 +21,10 @@ function handleLogout() {
     <!-- 로고 영역 -->
     <div class="flex h-20 items-center justify-center border-b border-gray-200 ">
       <div class="flex items-center space-x-3 gap-2">
-        <img src="/logo.webp" alt="Logo" class="h-13 w-auto"/>
+        <img src="/Logo.svg" alt="Logo" class="h-25 w-25"/>
         <div class="flex flex-col">
           <span class="text-lg font-bold text-gray-900 e">Kiosk Admin</span>
-          <p class="text-2xl text-gray-500 ">모바일융합공학과</p>
+          <p class="text-l text-gray-500 ">모바일융합공학과</p>
         </div>
       </div>
     </div>
