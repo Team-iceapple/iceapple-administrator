@@ -8,6 +8,8 @@
 
     import {PlaceModel} from '$lib/models/places/place.model.svelte';
     import {ReservationFormModel} from '$lib/models/places/reservation-form.model.svelte';
+    import {API_ENDPOINTS} from "$lib/config/api";
+
 
     const today = new Date().toISOString().split("T")[0];
     const {form, reservations, places} = $props();
@@ -220,39 +222,33 @@
   <!--			{/each}-->
   <!--		</div>-->
   <!--	</div>-->
-    <div class="relative mb-4">
-      <div class="flex space-x-4 overflow-x-auto p-2 scrollbar-hide">
-        {#each places.places as place (place.name)}
-          <div class="bg-white p-3 rounded-lg shadow min-w-[180px] flex-shrink-0">
-            <h3 class="font-bold text-lg border-b pb-2 mb-2">{place.name}</h3>
-            <ul class="space-y-1 text-sm">
-              {#each times as time}
-                {@const reservationsForTime = reservations.reservations.filter(
-                    r => r.place.name === place.name && r.times.some(r => String(r) === time)
-                )}
-                {@const reservation = reservationsForTime[0] ?? null}
-
-                <li class="flex items-center">
-                  <button
-                    class="flex items-center w-full py-1 px-2 rounded-md transition duration-100 {reservation ? 'hover:bg-red-50' : 'hover:bg-green-50'}"
-                    disabled={!reservation}
-                    onclick={(e) => reservation ? handleReservationItem(e, reservation) : null}
-                  >
-                    <span class={`w-3 h-3 rounded-full mr-2 ${reservation ? 'bg-red-400' : 'bg-green-400'}`}></span>
-                    <span>{time}:00</span>
-                    {#if reservation}
-                      <span class="ml-auto text-gray-500 text-xs truncate">{reservation.student_number}</span>
-                    {:else}
-                      <span class="ml-auto text-green-500 text-xs">예약 가능</span>
-                    {/if}
-                  </button>
-                </li>
-              {/each}
-            </ul>
-          </div>
-        {/each}
-      </div>
+  <div class="relative mb-4">
+    <div class="flex space-x-4 overflow-x-auto p-2 scrollbar-hide">
+      {#each places.places as place (place.name)}
+        <div class="bg-white p-3 rounded-lg shadow min-w-[180px] flex-shrink-0">
+          <h3 class="font-bold text-lg border-b pb-2 mb-2">{place.name}</h3>
+          <ul class="space-y-1 text-sm">
+            {#each times as time}
+              <li class="flex items-center">
+                {#each reservations.reservations.filter(r => r.times.includes(time) && r.place.name === place.name) as reservation}
+                <button
+                  class="flex items-center w-full"
+                  onclick={(e) => handleReservationItem(e, reservation)}
+                >
+                  <span class={`w-3 h-3 rounded-full mr-2 ${reservation ? 'bg-red-400' : 'bg-green-400'}`}></span>
+                  <span>{reservation.time}</span>
+                  {#if reservations.reservations.filter(r => r.times.includes(time) && r.place.name === place.name).length === 0}
+                    <span class="ml-auto text-gray-500 text-xs">{reservation.student_number}</span>
+                  {/if}
+                </button>
+                {/each}
+              </li>
+            {/each}
+          </ul>
+        </div>
+      {/each}
     </div>
+  </div>
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
     <div class="bg-white p-4 rounded-lg shadow">
       <h3 class="font-bold text-lg mb-4 border-b pb-2">공간 목록</h3>
