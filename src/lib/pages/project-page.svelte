@@ -87,6 +87,8 @@ async function afterProjectCreateOrUpdate(result: ActionResult) {
     await invalidateAll();
   }
 }
+
+$inspect(projectFile);
 </script>
 
 <div class="flex">
@@ -176,7 +178,7 @@ async function afterProjectCreateOrUpdate(result: ActionResult) {
                 id='year-input'
                 name="year"
                 bind:value={project.year}>
-          {#each generateYears(new Date().getFullYear() - 1, 10) as yearNum}
+          {#each generateYears(new Date().getFullYear() - 1, 2) as yearNum}
             <option value={yearNum}>{yearNum}</option>
           {/each}
         </select>
@@ -290,23 +292,43 @@ async function afterProjectCreateOrUpdate(result: ActionResult) {
       <!-- 썸네일 업로드 -->
       <div class="flex items-center gap-2 text-2xl">
         <label class="w-36 text-right" for="thumbnail-upload">썸네일 이미지</label>
-        <input class="flex-1 p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+        <input class="hidden flex-1 p-1"
                type="file"
                id="thumbnail-upload"
                name="thumbnail"
+               accept="image/*"
                bind:value={projectFile.thumbnail}
         />
+        <label for="thumbnail-upload" class="flex gap-2 p-1 px-2 border border-gray-300">
+          <img class="size-8" src="/images/project/image-up.svg" alt="img upload icon" />
+          <span>파일 선택</span>
+        </label>
+        {#if projectFile.thumbnail}
+          <span>{ projectFile.thumbnail }</span>
+        {:else}
+          <span>선택된 파일 없음</span>
+        {/if}
       </div>
 
       <!-- PDF 파일 업로드 -->
       <div class="flex items-center gap-2 text-2xl">
         <label class="w-36 text-right" for="pdf-upload">포스터 PDF</label>
-        <input class="flex-1 p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+        <input class="hidden flex-1 p-1"
                type="file"
                id="pdf-upload"
                name="pdf"
+               accept=".pdf"
                bind:value={projectFile.pdf}
         />
+        <label for="pdf-upload" class="flex gap-2 p-1 px-2 border border-gray-300">
+          <img class="size-8" src="/images/project/file-up.svg" alt="pdf upload icon" />
+          <span>파일 선택</span>
+        </label>
+        {#if projectFile.pdf}
+          <span>{ projectFile.pdf }</span>
+        {:else}
+          <span>선택된 파일 없음</span>
+        {/if}
       </div>
     </div>
   </form>
