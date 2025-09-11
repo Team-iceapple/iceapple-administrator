@@ -1,5 +1,7 @@
 import { error, fail } from '@sveltejs/kit';
+import { z } from 'zod';
 import { API_ENDPOINTS } from '$lib/config/api';
+import { ProjectCreateFormSchema } from '$lib/schema/project-create-form.schema';
 import type { ProjectGetResponse } from '$lib/types';
 import { logger } from '$lib/utils';
 import type { Actions, PageServerLoad } from './$types';
@@ -41,6 +43,16 @@ export const actions = {
 
     if (type === 'create') {
       logger.log('create 액션');
+      const result = ProjectCreateFormSchema.safeParse(
+        Object.fromEntries(formData),
+      );
+
+      if (!result.success)
+        return fail(400, {
+          success: false,
+          error: z.flattenError(result.error),
+        });
+
       const response = await fetch(API_ENDPOINTS.PROJECT_WORK, {
         method: 'POST',
         body: formData,
@@ -49,7 +61,7 @@ export const actions = {
       if (!response.ok)
         return fail(response.status, {
           success: false,
-          message: (await response.json()).message,
+          error: (await response.json()).message,
         });
 
       return {
@@ -65,7 +77,7 @@ export const actions = {
       if (id === null)
         return fail(401, {
           success: false,
-          message: '잘못된 요청입니다.',
+          error: '잘못된 요청입니다.',
         });
 
       const response = await fetch(`${API_ENDPOINTS.PROJECT_WORK}/${id}`, {
@@ -76,7 +88,7 @@ export const actions = {
       if (!response.ok)
         return fail(response.status, {
           success: false,
-          message: (await response.json()).message,
+          error: (await response.json()).message,
         });
 
       return {

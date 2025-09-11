@@ -88,7 +88,7 @@ async function afterProjectCreateOrUpdate(result: ActionResult) {
   }
 }
 
-$inspect(projectFile);
+$inspect(form);
 </script>
 
 <div class="flex">
@@ -170,7 +170,7 @@ $inspect(projectFile);
       </div>
     </div>
     <!-- 세부 정보 목록 -->
-    <div class="flex flex-col p-4 gap-6">
+    <div class="flex flex-col p-4 gap-8">
       <!-- 년도 -->
       <div class="flex items-center gap-2 text-2xl">
         <label class="w-36 text-right" for="year-input">년도</label>
@@ -182,10 +182,14 @@ $inspect(projectFile);
             <option value={yearNum}>{yearNum}</option>
           {/each}
         </select>
+
+        {#if form && form.success === false}
+          <p class="absolute text-red-500 text-xl -bottom-8 left-38">{ form.error.fieldErrors.year }</p>
+        {/if}
       </div>
 
       <!-- 프로젝트 이름 -->
-      <div class="flex items-center gap-2 text-2xl">
+      <div class="relative flex items-center gap-2 text-2xl">
         <label class="w-36 text-right" for="name-input">제목</label>
         <input class="flex-1 p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                id="name-input"
@@ -193,10 +197,13 @@ $inspect(projectFile);
                type="text"
                bind:value={project.name}
         />
+        {#if form && form.success === false}
+          <p class="absolute text-red-500 text-xl -bottom-8 left-38">{ form.error.fieldErrors.name }</p>
+        {/if}
       </div>
 
       <!-- 팀 이름 -->
-      <div class="flex items-center gap-2 text-2xl">
+      <div class="relative flex items-center gap-2 text-2xl">
         <label class="w-36 text-right" for="team-name-input">팀 이름</label>
         <input class="flex-1 p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                id="team-name-input"
@@ -204,6 +211,9 @@ $inspect(projectFile);
                type="text"
                bind:value={project.team_name}
         />
+        {#if form && form.success === false}
+          <p class="absolute text-red-500 text-xl -bottom-8 left-38">{ form.error.fieldErrors.team_name }</p>
+        {/if}
       </div>
 
       <!-- 팀원 -->
@@ -233,53 +243,59 @@ $inspect(projectFile);
         </div>
 
         <!-- 팀원 목록 -->
-          <div class="ml-38 border border-gray-300 rounded">
-            <input type="hidden"
-                   name="members"
-                   value={JSON.stringify(project.members)}
-            />
+        <div class="relative ml-38 border border-gray-300 rounded">
+          <input type="hidden"
+                 name="members"
+                 value={JSON.stringify(project.members)}
+          />
 
-            <table class="table-fixed w-full text-2xl">
-              <thead>
-                <tr class="border-b border-gray-300 bg-slate-50 text-left">
-                  <th class="w-1/8 px-2 py-1 border-r border-gray-300 font-normal">이름</th>
-                  <th class="w-1/2 px-2 py-1 font-normal">세부 정보</th>
+          <table class="table-fixed w-full text-2xl">
+            <thead>
+              <tr class="border-b border-gray-300 bg-slate-50 text-left">
+                <th class="w-1/8 px-2 py-1 border-r border-gray-300 font-normal">이름</th>
+                <th class="w-1/2 px-2 py-1 font-normal">세부 정보</th>
+              </tr>
+            </thead>
+          </table>
+          <div class="h-46 overflow-y-auto">
+            <table class="table-fixed w-full text-sm">
+              <tbody>
+              {#each project.members as member, i (i)}
+                <tr class="not-first:border-t last:border-b border-gray-300 text-xl">
+                  <td class="w-1/8 px-2 py-1 border-r border-gray-300">{member.name}</td>
+                  <td class="relative w-1/2 px-2 py-1">
+                    {member.extra}
+                    <button class="absolute right-2 text-red-500"
+                            type="button"
+                            onclick={() => projectFormModel.deleteMember(i)}
+                    >X</button>
+                  </td>
                 </tr>
-              </thead>
+              {/each}
+              </tbody>
             </table>
-            <div class="h-46 overflow-y-auto">
-              <table class="table-fixed w-full text-sm">
-                <tbody>
-                {#each project.members as member, i (i)}
-                  <tr class="not-first:border-t last:border-b border-gray-300 text-xl">
-                    <td class="w-1/8 px-2 py-1 border-r border-gray-300">{member.name}</td>
-                    <td class="relative w-1/2 px-2 py-1">
-                      {member.extra}
-                      <button class="absolute right-2 text-red-500"
-                              type="button"
-                              onclick={() => projectFormModel.deleteMember(i)}
-                      >X</button>
-                    </td>
-                  </tr>
-                {/each}
-                </tbody>
-              </table>
-            </div>
           </div>
+          {#if form && form.success === false}
+            <p class="absolute text-red-500 text-xl -bottom-8">{ form.error.fieldErrors.members }</p>
+          {/if}
+        </div>
       </div>
 
       <!-- 프로젝트 설명 -->
-      <div class="flex text-2xl gap-2">
+      <div class="relative flex text-2xl gap-2">
         <label class="w-36 text-right" for="description-text-area">설명</label>
         <textarea class="flex-1 p-1 border border-gray-300 rounded-sm h-24 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   id="description-text-area"
                   name="description"
                   bind:value={project.description}
         ></textarea>
+        {#if form && form.success === false}
+          <p class="absolute text-red-500 text-xl -bottom-8 left-38">{ form.error.fieldErrors.description }</p>
+        {/if}
       </div>
 
       <!-- 메인 URL (QR 코드 용 주소) -->
-      <div class="flex items-center gap-2 text-2xl">
+      <div class="relative flex items-center gap-2 text-2xl">
         <label class="w-36 text-right" for="main-url-input">메인 URL</label>
         <input class="flex-1 p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                id="main-url-input"
@@ -287,10 +303,13 @@ $inspect(projectFile);
                type="text"
                bind:value={project.main_url}
         />
+        {#if form && form.success === false}
+          <p class="absolute text-red-500 text-xl -bottom-8 left-38">{ form.error.fieldErrors.main_url }</p>
+        {/if}
       </div>
 
       <!-- 썸네일 업로드 -->
-      <div class="flex items-center gap-2 text-2xl">
+      <div class="relative flex items-center gap-2 text-2xl">
         <label class="w-36 text-right" for="thumbnail-upload">썸네일 이미지</label>
         <input class="hidden flex-1 p-1"
                type="file"
@@ -308,10 +327,13 @@ $inspect(projectFile);
         {:else}
           <span>선택된 파일 없음</span>
         {/if}
+        {#if form && form.success === false}
+          <p class="absolute text-red-500 text-xl -bottom-8 left-38">{ form.error.fieldErrors.thumbnail }</p>
+        {/if}
       </div>
 
       <!-- PDF 파일 업로드 -->
-      <div class="flex items-center gap-2 text-2xl">
+      <div class="relative flex items-center gap-2 text-2xl">
         <label class="w-36 text-right" for="pdf-upload">포스터 PDF</label>
         <input class="hidden flex-1 p-1"
                type="file"
@@ -328,6 +350,9 @@ $inspect(projectFile);
           <span>{ projectFile.pdf }</span>
         {:else}
           <span>선택된 파일 없음</span>
+        {/if}
+        {#if form && form.success === false}
+          <p class="absolute text-red-500 text-xl -bottom-8 left-38">{ form.error.fieldErrors.pdf }</p>
         {/if}
       </div>
     </div>
