@@ -5,6 +5,7 @@ import { goto, invalidateAll } from '$app/navigation';
 import { MemberModel, ProjectFormModel } from '$lib/models/projects';
 import type { DetailProjectGetResponse, Project } from '$lib/types';
 import { generateYears } from '$lib/utils';
+import {authFetch} from "$lib/utils/auth";
 
 const { form, projects, currentPage: initialCurrentPage, maxPage } = $props();
 
@@ -26,7 +27,7 @@ async function selectProject(projectId: string) {
     return;
   }
 
-  const response = await fetch(`api/project/${projectId}`);
+  const response = await authFetch(`/api/project/${projectId}`);
 
   const body: DetailProjectGetResponse = await response.json();
 
@@ -57,7 +58,7 @@ async function handleDeleteProject() {
     // 추후 커스텀 모달로 변경 가능
     return;
 
-  const response = await fetch(`api/project/${selectedProject.id}`, {
+  const response = await authFetch(`/api/project/${selectedProject.id}`, {
     method: 'DELETE',
   });
 
@@ -132,7 +133,7 @@ $inspect(form);
           role="button"
           tabindex={0}
         >
-          <img class="size-48 rounded-sm border border-gray-300" src={`api/project/files/${project.thumbnail}?type=png`} alt={`${project.name} Thumbnail`} />
+          <img class="size-48 rounded-sm border border-gray-300" src={`/api/project/files/${project.thumbnail}?type=png`} alt={`${project.name} Thumbnail`} />
           <div class="flex flex-col text-left">
             <p class="text-2xl font-semibold text-gray-800">{project.name}</p>
             <p class="text-xl text-gray-500">{project.members.map((member) => member.name)}</p>

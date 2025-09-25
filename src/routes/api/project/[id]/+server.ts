@@ -1,35 +1,51 @@
-import { API_ENDPOINTS } from '$lib/config/api';
-import { logger } from '$lib/utils';
+import {API_ENDPOINTS} from '$lib/config/api';
+import {logger} from '$lib/utils';
 
-export async function GET({ params }) {
-  const { id } = params;
+export async function GET({params, request}) {
+    const {id} = params;
+    const authHeader = request.headers.get('Authorization');
 
-  const endpoint = `${API_ENDPOINTS.PROJECT_WORK}/${id}`;
-  logger.log('프로젝트 세부 정보 요청', {
-    endpoint,
-    id: id,
-  });
+    const headers: HeadersInit = {};
+    if (authHeader) {
+        headers['Authorization'] = authHeader;
+    }
 
-  const response = fetch(endpoint, {
-    method: 'GET',
-  });
+    const endpoint = `${API_ENDPOINTS.PROJECT_WORK}/${id}`;
+    logger.log('프로젝트 세부 정보 요청', {
+        endpoint,
+        id: id,
+        hasAuth: !!authHeader
+    });
 
-  return response;
+    const response = fetch(endpoint, {
+        method: 'GET',
+        headers
+    });
+
+    return response;
 }
 
-export async function DELETE({ params }) {
-  const { id } = params;
+export async function DELETE({params, request}) {
+    const {id} = params;
+    const authHeader = request.headers.get('Authorization');
 
-  const endpoint = `${API_ENDPOINTS.PROJECT_WORK}/${id}`;
+    const headers: HeadersInit = {};
+    if (authHeader) {
+        headers['Authorization'] = authHeader;
+    }
 
-  logger.log('프로젝트 삭제 요청', {
-    endpoint,
-    id: id,
-  });
+    const endpoint = `${API_ENDPOINTS.PROJECT_WORK}/${id}`;
 
-  const response = fetch(endpoint, {
-    method: 'DELETE',
-  });
+    logger.log('프로젝트 삭제 요청', {
+        endpoint,
+        id: id,
+        hasAuth: !!authHeader
+    });
 
-  return response;
+    const response = fetch(endpoint, {
+        method: 'DELETE',
+        headers
+    });
+
+    return response;
 }
