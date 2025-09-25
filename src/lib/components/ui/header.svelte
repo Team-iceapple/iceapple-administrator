@@ -22,7 +22,7 @@ let { title }: { title: string } = $props();
         </svg>
       </div>
       <div class="flex flex-col">
-        <span class="text-2xl font-medium text-gray-900 ">관리자 000님</span>
+        <span class="text-2xl font-medium text-gray-900 ">관리자님</span>
       </div>
     </div>
   </div>
