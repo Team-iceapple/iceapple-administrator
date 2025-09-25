@@ -115,7 +115,7 @@
           href={item.href}
           class="flex items-center px-4 py-3 text-2xl font-medium rounded-lg transition-colors duration-200
 						? 'bg-blue-100 text-blue-700'
-						: 'text-gray-700 hover:bg-gray-100'}"
+						: 'text-gray-700 hover:bg-gray-300 hover:text-gray-900 hover:shadow-sm'}"
         >
           <img src={item.icon} alt={item.name + ' 아이콘'} class="mr-3 h-6 w-6"/>
           {item.name}

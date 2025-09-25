@@ -1,6 +1,6 @@
 <script lang="ts">
     import {goto} from '$app/navigation';
-    import {getToken, setToken} from '$lib/utils/auth';
+    import {setToken} from '$lib/utils/auth';
     import {redirectIfAuthenticated} from '$lib/utils/auth-guard';
     import {onMount} from 'svelte';
 
@@ -10,7 +10,6 @@
     let errorMessage = $state('');
 
     onMount(() => {
-        // 이미 로그인된 사용자는 메인 페이지로 리다이렉트
         redirectIfAuthenticated();
     });
 
@@ -38,10 +37,8 @@
             const data = await response.json();
 
             if (response.ok && data.success) {
-                // 토큰 저장
                 setToken(data.token);
 
-                // 메인 페이지로 리다이렉트
                 goto('/');
             } else {
                 // HTTP 상태 코드에 따른 에러 메시지
@@ -79,13 +76,8 @@
     <div class="flex items-center justify-center mt-3">
       <img src="/logo.jpg" alt="Logo" class="h-28 w-28"/>
     </div>
-    <div class="flex items-center justify-center mt-4">
-      <p class="text-4xl font-bold text-gray-500">
-        Login
-      </p>
-    </div>
     <div class="flex items-center justify-center mt-3">
-      <p class="text-sm text-gray-500">
+      <p class="text-l text-gray-500">
         국립한밭대학교 모바일융합공학과
       </p>
     </div>
