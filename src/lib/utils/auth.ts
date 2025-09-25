@@ -17,9 +17,11 @@ export function getToken(): string | null {
  * localStorage에 JWT 토큰을 저장합니다
  */
 export function setToken(token: string): void {
-    console.log('setToken', token);
     if (typeof window === 'undefined') return;
     localStorage.setItem(TOKEN_KEY, token);
+
+    // 쿠키에도 저장 (서버에서 접근 가능)
+    document.cookie = `${TOKEN_KEY}=${token}; path=/; max-age=${7 * 24 * 60 * 60}; samesite=strict`;
 }
 
 /**
@@ -28,6 +30,10 @@ export function setToken(token: string): void {
 export function removeToken(): void {
     if (typeof window === 'undefined') return;
     localStorage.removeItem(TOKEN_KEY);
+
+    // 쿠키에서도 삭제
+    document.cookie = `${TOKEN_KEY}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+
 }
 
 /**
@@ -41,7 +47,9 @@ export function hasToken(): boolean {
  * API 요청을 위한 기본 헤더를 반환합니다
  */
 export function getAuthHeaders(): HeadersInit {
+
     const token = getToken();
+
     const headers: HeadersInit = {
         'Content-Type': 'application/json',
     };
@@ -75,7 +83,7 @@ export async function authFetch(url: string, options: RequestInit = {}): Promise
  */
 export async function extendSession(): Promise<{ success: boolean; message: string }> {
     try {
-        const response = await authFetch('api/auth/extends', {
+        const response = await authFetch('/api/auth/extends', {
             method: 'POST',
         });
 
