@@ -1,4 +1,4 @@
-import {error, fail} from '@sveltejs/kit';
+import {error, fail, redirect} from '@sveltejs/kit';
 import {z} from 'zod';
 import {API_ENDPOINTS} from '$lib/config/api';
 import {ProjectCreateFormSchema} from '$lib/schema/project-create-form.schema';
@@ -9,7 +9,13 @@ import type {Actions, PageServerLoad} from './$types';
 const PAGE_SIZE = 5;
 
 export const load: PageServerLoad = async ({url, fetch, cookies}) => {
+
     const token = cookies.get('accessToken');
+
+    if (!token) {
+        throw redirect(307, '/');
+    }
+
     const headers: HeadersInit = {};
 
     if (token) {
