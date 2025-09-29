@@ -16,10 +16,10 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
             headers: { 'Content-Type': 'application/json' }
         });
     }
-    const response = await fetch(API_ENDPOINTS.PLACE_PLACE, {
+    const response = await fetch(API_ENDPOINTS.PLACE_RESERVATION, {
         method: 'POST',
         headers: {
-            'Authorization': authHeader,
+            'Authorization': `${authHeader}`,
             'Content-Type': 'application/json' },
         body: JSON.stringify(body),
     });
@@ -31,16 +31,16 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         return new Response(JSON.stringify({ success: false, message: err.message }), {
             status: response.status,
             headers: {
-                'Authorization': authHeader,
+                'Authorization': `${authHeader}`,
                 'Content-Type': 'application/json' }
         });
     }
 
     const result = await response.json();
-    return new Response(JSON.stringify({ success: true, message: '공간이 등록되었습니다.', data: result }), {
+    return new Response(JSON.stringify({ success: true, message: '예약이 등록되었습니다.', data: result }), {
         status: 201,
         headers: {
-            'Authorization': authHeader,
+            'Authorization': `${authHeader}`,
             'Content-Type': 'application/json' }
     });
 };

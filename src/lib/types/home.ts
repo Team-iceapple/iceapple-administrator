@@ -6,7 +6,9 @@ export type ApiReservation = {
   place: {
     id: string;
     name: string;
+    count: number;
   };
+  res_count: number;
 };
 
 export type AdminVideo = {
