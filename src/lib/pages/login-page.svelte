@@ -39,7 +39,7 @@
             if (response.ok && data.success) {
                 setToken(data.token);
 
-                goto('/');
+                goto('/home');
             } else {
                 // HTTP 상태 코드에 따른 에러 메시지
                 if (response.status === 401) {
