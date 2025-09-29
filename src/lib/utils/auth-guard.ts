@@ -22,7 +22,7 @@ export function redirectIfAuthenticated(): boolean {
     if (typeof window === 'undefined') return true; // 서버 사이드에서는 통과
 
     if (hasToken()) {
-        goto('/');
+        goto('/home');
         return false;
     }
 
