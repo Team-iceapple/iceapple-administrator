@@ -5,10 +5,12 @@
     import type { LayoutProps } from './$types';
 
     let { data, children }: LayoutProps = $props();
+
+    const showSidebar = $derived(data.isAuthenticated && page.url.pathname !== '/');
 </script>
 
 <div class="min-h-screen bg-gray-50 ">
-  {#if page.url.pathname !== '/'}
+  {#if showSidebar}
     <SideBar/>
 
     <div class="ml-64">
