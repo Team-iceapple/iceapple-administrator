@@ -1,8 +1,16 @@
-export type Room = {
+export type Place = {
   id: string;
   name: string;
-  description?: string | null;
+  description: string;
+  count: number | null;
 };
+
+export type PlaceModel = {
+    id: string;
+    name: string;
+    description: string;
+    count: number | null;
+}
 
 export type Student = {
   id: string;
@@ -11,18 +19,31 @@ export type Student = {
 };
 
 export type Reservation = {
-  id: string;
-  times: string[];
-  date: Date;
-  room: Room;
-  student: Student;
-  description?: string | null;
+    id: string;
+    date: string;
+    times: number[];
+    student: {
+        id: string;
+        number: string;
+        phone: string;
+    };
+    phone_number: string;
+    place: {
+        id: string;
+        name: string;
+        description: string;
+        count: number;
+    };
+    res_count: number;
 };
 
-export type ChangeType = 'APPLY' | 'EDIT' | 'DELETE';
-
-export type PendingToChange = {
-  id: number;
-  type: ChangeType;
-  data: Reservation;
-};
+export type ReservationForm = {
+    id: string;
+    date: string;
+    place_name: string;
+    times: number[];
+    student_number: string;
+    phone_number: string;
+    place_count: number;
+    place_id: string;
+}

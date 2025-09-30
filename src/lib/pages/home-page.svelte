@@ -1,5 +1,4 @@
 <script lang="ts">
-    import type {ActionData, PageData} from '../../routes/$types';
     import {
         MeetingRoomList,
         PinnedNotices,
@@ -9,12 +8,12 @@
         TodayReservations,
         VideoManager
     } from '$lib/components/home';
-
     let {data, form}: { data: PageData, form?: ActionData } = $props();
 
     let showMeetingRoomList = $state(false);
     let showReservationList = $state(false);
     let showProjectList = $state(false);
+
     let showMessage = $state(true);
 
     $effect(() => {
