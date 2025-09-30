@@ -3,23 +3,45 @@
         MeetingRoomList,
         PinnedNotices,
         ProjectList,
-        RecentProjects,
         ReservationsList,
         SummaryCard,
         TodayReservations,
         VideoManager
     } from '$lib/components/home';
-    import type {PageData, ActionData} from '../../routes/(home)/$types';
-
     let {data, form}: { data: PageData, form?: ActionData } = $props();
 
     let showMeetingRoomList = $state(false);
     let showReservationList = $state(false);
     let showProjectList = $state(false);
+
+    let showMessage = $state(true);
+
+    $effect(() => {
+        if (form?.success !== undefined) {
+            showMessage = true;
+            const timer = setTimeout(() => {
+                showMessage = false;
+            }, 5000);
+            
+            return () => clearTimeout(timer);
+        }
+    });
 </script>
 
 <main class="p-6">
-    <VideoManager currentVideo={data.currentVideo} homeVideos={data.homeVideos} form={form}/>
+    {#if showMessage && form?.success === false}
+        <div class="bg-red-50 border border-red-200 rounded-lg p-3 mb-6">
+            <p class="text-red-600 text-sm">{form.message}</p>
+        </div>
+    {/if}
+
+    {#if showMessage && form?.success === true}
+        <div class="bg-green-50 border border-green-200 rounded-lg p-3 mb-6">
+            <p class="text-green-600 text-sm">{form.message}</p>
+        </div>
+    {/if}
+
+    <VideoManager currentVideo={data.currentVideo} homeVideos={data.homeVideos} playlist={data.playlist} form={form}/>
 
     <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -60,8 +82,7 @@
         <TodayReservations reservations={data.todayReservations}/>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <RecentProjects projects={data.recentProjects}/>
+    <div class="grid grid-cols-1 gap-6 mb-6">
         <PinnedNotices notices={data.pinnedNotices}/>
     </div>
 </main>
