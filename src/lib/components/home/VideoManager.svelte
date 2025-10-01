@@ -19,9 +19,9 @@
     weight: '',
     playbackRate: ''
   });
-  // 성공적인 action 후에는 목록을 열어둠
+
   $effect(() => {
-    if (form?.success === true) {
+    if (form && typeof form === 'object' && form !== null && 'success' in form && (form as any).success === true) {
       showVideoList = true;
     }
   });
@@ -53,8 +53,9 @@
     
     <div class="flex-1">
       <h3 class="font-medium text-gray-900 text-lg">
-        현재 영상: <span class="text-indigo-600">{currentVideo?.title || '설정된 영상이 없습니다'}</span>
+        현재 재생 중인 영상: <span class="text-indigo-600">{currentVideo?.title || '재생 중인 영상이 없습니다'}</span>
       </h3>
+      <p class="text-sm text-gray-600 mt-1">우선순위가 가장 높은 활성화된 영상이 자동으로 재생됩니다</p>
     </div>
   </div>
 
@@ -164,15 +165,6 @@
                     {video.enabled === false ? '활성화' : '비활성화'}
                   </button>
                 </form>
-                <form method="POST" action="?/setCurrentVideo" class="inline">
-                  <input type="hidden" name="id" value={video.id}>
-                  <button 
-                    type="submit"
-                    class="bg-indigo-400 text-white px-3 py-2 rounded text-sm min-w-[70px] hover:bg-indigo-500 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
-                    disabled={video.current}>
-                    대표설정
-                  </button>
-                </form>
                 <form method="POST" action="?/deleteVideo" class="inline">
                   <input type="hidden" name="id" value={video.id}>
                   <button 
@@ -187,7 +179,7 @@
             <!-- 편집 폼 -->
             {#if editingVideoId === video.id}
               <div class="border-t border-gray-200 pt-3 mt-3">
-                <form method="POST" action="?/updateVideo" class="space-y-3">
+                <form method="POST" action="?/updateVideo" class="space-y-3" id="edit-form-{video.id}">
                   <input type="hidden" name="id" value={video.id}>
                   <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                     <div>
@@ -222,12 +214,29 @@
                     </div>
                   </div>
                   <div class="flex space-x-2">
-                    <button 
+                    <button
+                      type="button"
+                      onclick={(e) => {
+                        const target = e.target;
+                        const formElement = target.closest('form');
+                        if (formElement) {
+                          const makeFirstInput = document.createElement('input');
+                          makeFirstInput.type = 'hidden';
+                          makeFirstInput.name = 'makeFirst';
+                          makeFirstInput.value = 'true';
+                          formElement.appendChild(makeFirstInput);
+                          formElement.submit();
+                        }
+                      }}
+                      class="bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700">
+                      최우선으로 설정
+                    </button>
+                    <button
                       type="submit"
                       class="bg-green-600 text-white px-3 py-1 rounded text-xs hover:bg-green-700">
                       저장
                     </button>
-                    <button 
+                    <button
                       type="button"
                       onclick={() => editingVideoId = null}
                       class="bg-gray-600 text-white px-3 py-1 rounded text-xs hover:bg-gray-700">
@@ -249,7 +258,7 @@
   <!-- 활성화된 영상 목록 (Playlist) -->
   {#if showPlaylist}
     <div class="border-t border-gray-200 pt-4 mt-4">
-      <h3 class="text-md font-medium text-gray-900 mb-4">활성화된 영상 목록 (재생 목록)</h3>
+      <h3 class="text-md font-medium text-gray-900 mb-4">활성화된 영상 목록 (우선순위 순)</h3>
       <div class="space-y-2">
         {#each playlist as video, index}
           <div class="border border-green-200 rounded-lg p-3 bg-green-50">
