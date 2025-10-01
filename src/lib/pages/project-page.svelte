@@ -92,9 +92,9 @@ async function afterProjectCreateOrUpdate(result: ActionResult) {
 $inspect(form);
 </script>
 
-<div class="flex">
+<div class="flex px-4">
   <!-- 좌측 패널 -->
-  <div class="basis-1/2">
+  <div class="basis-3/1">
     <div class="flex flex-col gap-4 min-h-[1140px] ">
       <div class="mt-2 mx-auto flex items-center gap-4 text-gray-700 text-xl">
         <button class="px-2 py-1 border border-gray-400 rounded-sm
@@ -144,7 +144,7 @@ $inspect(form);
   </div>
 
   <!-- 세로 구분선 -->
-  <div class="border-l-2 border-l-gray-100 mx-2"></div>
+  <div class="border-l-2 border-l-gray-100 mx-4"></div>
 
   <!-- 우측 패널 -->
   <form class="flex flex-col basis-1/2"
@@ -171,10 +171,10 @@ $inspect(form);
       </div>
     </div>
     <!-- 세부 정보 목록 -->
-    <div class="flex flex-col p-4 gap-8">
+    <div class="flex flex-col p-4 gap-2">
       <!-- 년도 -->
-      <div class="flex items-center gap-2 text-2xl">
-        <label class="w-36 text-right" for="year-input">년도</label>
+      <div class="flex flex-col gap-2 text-2xl">
+        <label class="w-36" for="year-input">년도</label>
         <select class="max-w-24 flex-1 p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                 id='year-input'
                 name="year"
@@ -190,8 +190,8 @@ $inspect(form);
       </div>
 
       <!-- 프로젝트 이름 -->
-      <div class="relative flex items-center gap-2 text-2xl">
-        <label class="w-36 text-right" for="name-input">제목</label>
+      <div class="relative flex flex-col gap-2 text-2xl">
+        <label class="w-36" for="name-input">제목</label>
         <input class="flex-1 p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                id="name-input"
                name="name"
@@ -204,8 +204,8 @@ $inspect(form);
       </div>
 
       <!-- 팀 이름 -->
-      <div class="relative flex items-center gap-2 text-2xl">
-        <label class="w-36 text-right" for="team-name-input">팀 이름</label>
+      <div class="relative flex flex-col gap-2 text-2xl">
+        <label class="w-36" for="team-name-input">팀 이름</label>
         <input class="flex-1 p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                id="team-name-input"
                name="team_name"
@@ -219,10 +219,10 @@ $inspect(form);
 
       <!-- 팀원 -->
       <div class="flex flex-col gap-2">
-        <div class="flex items-center gap-2 text-2xl">
-          <label class="w-36 text-right" for="member-name-input">팀원</label>
+        <div class="flex flex-col gap-2 text-2xl">
+          <label class="w-36" for="member-name-input">팀원</label>
 
-          <div class="flex-1 flex gap-2">
+          <div class="flex gap-2 h-11">
             <input class="p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                    id="member-name-input"
                    bind:value={member.name}
@@ -234,7 +234,7 @@ $inspect(form);
                    type="text"
                    placeholder="팀원 세부 정보.."
             />
-            <button class="px-3 py-1 border border-gray-400 rounded-sm text-gray-700 hover:bg-gray-100 active:ring-1 active:ring-blue-300 transition-colors"
+            <button class="w-18 px-3 py-1 border border-gray-400 rounded-sm text-gray-700 hover:bg-gray-100 active:ring-1 active:ring-blue-300 transition-colors"
                     type="button"
                     onclick={projectFormModel.addMember}
             >
@@ -244,7 +244,7 @@ $inspect(form);
         </div>
 
         <!-- 팀원 목록 -->
-        <div class="relative ml-38 border border-gray-300 rounded">
+        <div class="relative border border-gray-300 rounded">
           <input type="hidden"
                  name="members"
                  value={JSON.stringify(project.members)}
@@ -283,8 +283,8 @@ $inspect(form);
       </div>
 
       <!-- 프로젝트 설명 -->
-      <div class="relative flex text-2xl gap-2">
-        <label class="w-36 text-right" for="description-text-area">설명</label>
+      <div class="relative flex flex-col text-2xl gap-2">
+        <label class="w-36" for="description-text-area">설명</label>
         <textarea class="flex-1 p-1 border border-gray-300 rounded-sm h-24 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   id="description-text-area"
                   name="description"
@@ -296,8 +296,8 @@ $inspect(form);
       </div>
 
       <!-- 메인 URL (QR 코드 용 주소) -->
-      <div class="relative flex items-center gap-2 text-2xl">
-        <label class="w-36 text-right" for="main-url-input">메인 URL</label>
+      <div class="relative flex flex-col gap-2 text-2xl">
+        <label class="w-36" for="main-url-input">메인 URL</label>
         <input class="flex-1 p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                id="main-url-input"
                name="main_url"
@@ -310,8 +310,8 @@ $inspect(form);
       </div>
 
       <!-- 썸네일 업로드 -->
-      <div class="relative flex items-center gap-2 text-2xl">
-        <label class="w-36 text-right" for="thumbnail-upload">썸네일 이미지</label>
+      <div class="relative flex flex-col gap-2 text-2xl">
+        <label class="w-36" for="thumbnail-upload">썸네일 이미지</label>
         <input class="hidden flex-1 p-1"
                type="file"
                id="thumbnail-upload"
@@ -334,8 +334,8 @@ $inspect(form);
       </div>
 
       <!-- PDF 파일 업로드 -->
-      <div class="relative flex items-center gap-2 text-2xl">
-        <label class="w-36 text-right" for="pdf-upload">포스터 PDF</label>
+      <div class="relative flex flex-col gap-2 text-2xl">
+        <label class="w-36" for="pdf-upload">포스터 PDF</label>
         <input class="hidden flex-1 p-1"
                type="file"
                id="pdf-upload"
