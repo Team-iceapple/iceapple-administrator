@@ -4,7 +4,6 @@ import type { Actions, PageServerLoad } from './$types';
 import type { ApiReservation } from '$lib/types/home';
 
 export const load: PageServerLoad = async ({ fetch, cookies }) => {
-    // 토큰 확인 후 없으면 루트(로그인) 페이지로 리다이렉트
     const token = cookies.get('accessToken');
     if (!token) {
         throw redirect(307, '/');
@@ -23,9 +22,8 @@ export const load: PageServerLoad = async ({ fetch, cookies }) => {
         homeVideos: `${API_URL}/home/admin/videos`,
         playlist: `${API_URL}/home/videos/playlist?includeCurrent=true`,
         pinnedNotices: `${API_URL}/notice/mobile/pin`
-    };
+    }
 
-    // API 호출에 Authorization 헤더 추가
     const headers: HeadersInit = {
         'Authorization': `Bearer ${token}`
     };
@@ -70,7 +68,8 @@ export const load: PageServerLoad = async ({ fetch, cookies }) => {
 
         const count = timeSlots.map(timeSlot => {
             const hour = parseInt(timeSlot.split(':')[0]);
-            return placeReservations.filter((r: ApiReservation) => r.times.includes(hour)).length;
+            const reservationsAtThisHour = placeReservations.filter((r: ApiReservation) => r.times.includes(hour));
+            return reservationsAtThisHour.reduce((sum: number, r: ApiReservation) => sum + (r.res_count || 1), 0);
         });
 
         return {
@@ -167,39 +166,6 @@ export const actions: Actions = {
         }
     },
 
-    setCurrentVideo: async ({ request, fetch, cookies }) => {
-        const token = cookies.get('accessToken');
-        const headers: HeadersInit = {
-            'Content-Type': 'application/json'
-        };
-        if (token) {
-            headers['Authorization'] = `Bearer ${token}`;
-        }
-        const formData = await request.formData();
-        const videoId = formData.get('id');
-
-        if (!videoId) {
-            return { success: false, message: '설정할 영상 ID가 필요합니다.' };
-        }
-
-        try {
-            const response = await fetch(`${API_URL}/home/admin/videos/${videoId}`, {
-                method: 'PATCH',
-                headers,
-                body: JSON.stringify({ weight: -1 })
-            });
-
-            if (response.ok) {
-                return { success: true, message: '현재 영상이 성공적으로 변경되었습니다.' };
-            } else {
-                const errorData = await response.json();
-                return { success: false, message: `현재 영상 설정 실패: ${errorData.message || response.statusText}` };
-            }
-        } catch (error) {
-            console.error('Error setting current video:', error);
-            return { success: false, message: '현재 영상 설정 중 오류가 발생했습니다.' };
-        }
-    },
 
     enableVideo: async ({ request, fetch, cookies }) => {
         const token = cookies.get('accessToken');
@@ -249,15 +215,17 @@ export const actions: Actions = {
         const title = formData.get('title');
         const weight = formData.get('weight');
         const playbackRate = formData.get('playbackRate');
+        const makeFirst = formData.get('makeFirst') === 'true';
 
         if (!videoId) {
             return { success: false, message: '영상 ID가 필요합니다.' };
         }
 
-        const updateData: Record<string, string | number> = {};
+        const updateData: Record<string, string | number | boolean> = {};
         if (title) updateData.title = title.toString();
         if (weight) updateData.weight = parseInt(weight.toString());
         if (playbackRate) updateData.playbackRate = parseFloat(playbackRate.toString());
+        if (makeFirst) updateData.makeFirst = true;
 
         try {
             const response = await fetch(`${API_URL}/home/admin/videos/${videoId}`, {
@@ -267,7 +235,8 @@ export const actions: Actions = {
             });
 
             if (response.ok) {
-                return { success: true, message: '영상 정보가 성공적으로 업데이트되었습니다.' };
+                const message = makeFirst ? '영상이 최우선으로 설정되었습니다.' : '영상 정보가 성공적으로 업데이트되었습니다.';
+                return { success: true, message };
             } else {
                 const errorData = await response.json();
                 return { success: false, message: `영상 정보 업데이트 실패: ${errorData.message || response.statusText}` };
