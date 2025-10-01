@@ -328,19 +328,19 @@
     // }
 </script>
 
-<main class="p-4 bg-gray-100 min-h-screen">
-  <div class="flex justify-between items-center mb-4">
-    <div class="flex items-center space-x-4">
-      <span class="text-gray-600">날짜 선택 :</span>
-      <input type="date" placeholder="오늘-Today" class="bg-white px-4 py-2 border rounded-md shadow-sm" bind:value={selectedDate} onchange={(e) => selectedDate = e.currentTarget.value}/>
+<main class="p-4 min-h-screen">
+  <div class="flex justify-between items-center mb-6">
+    <div class="flex items-center space-x-6">
+      <span class="text-gray-600 text-xl">날짜 선택 :</span>
+      <input type="date" placeholder="오늘-Today" class="bg-white px-4 py-2 border rounded-md shadow-sm text-xl" bind:value={selectedDate} onchange={(e) => selectedDate = e.currentTarget.value}/>
     </div>
   </div>
-  <div class="relative mb-4">
+  <div class="relative mb-6">
     <div class="flex space-x-4 overflow-x-auto p-2 scrollbar-hide">
       {#each places as place (place.individualId)}
-        <div class="bg-white p-3 rounded-lg shadow min-w-[180px] flex-shrink-0">
-          <h3 class="font-bold text-lg border-b pb-2 mb-2">{place.displayName}</h3>
-          <ul class="space-y-1 text-sm">
+        <div class="bg-white p-3 rounded-lg shadow min-w-[230px] flex-shrink-0">
+          <h3 class="font-bold text-2xl border-b pb-2 mb-2">{place.displayName}</h3>
+          <ul class="space-y-1 text-xl">
             {#each times as time}
               {@const hour = parseInt(time, 10)}
 
@@ -362,13 +362,13 @@
                   >
                     <span class="w-3 h-3 rounded-full mr-2 bg-red-400"></span>
                     <span>{time}:00</span>
-                    <span class="ml-auto text-black-500 text-xs">{reservation.student.number}</span>
+                    <span class="ml-auto text-black-500 text-ml">{reservation.student.number}</span>
                   </button>
                 {:else}
                   <div class="flex items-center w-full opacity-70">
                     <span class="w-3 h-3 rounded-full mr-2 bg-green-400"></span>
                     <span>{time}:00</span>
-                    <span class="ml-auto text-black-500 text-xs">가능</span>
+                    <span class="ml-auto text-black-500 text-lg">가능</span>
                   </div>
                 {/if}
               </li>
@@ -387,7 +387,7 @@
           type="search"
           bind:value={searchTerm}
           placeholder="공간 이름으로 검색..."
-          class="w-full border rounded p-2 text-sm"
+          class="w-full border rounded p-2 text-lg"
         />
       </div>
       <ul class="space-y-2 overflow-y-auto max-h-60">
@@ -401,7 +401,7 @@
               class="mr-3 h-4 w-4 cursor-pointer"
             />
             <label for={`place-${place.id}`}
-                   class="font-semibold cursor-pointer select-none w-full">{place.name}</label>
+                   class="font-semibold cursor-pointer select-none w-full text-lg">{place.name}</label>
           </li>
         {/each}
       </ul>
@@ -409,7 +409,7 @@
         <button
           onclick={() => handleDeleteSelectedPlaces()}
           disabled={selectedPlaceId.length === 0}
-          class="bg-red-500 text-white px-4 py-1 rounded-md text-sm transition hover:bg-red-600 active:scale-95 disabled:bg-gray-300 disabled:cursor-not-allowed"
+          class="bg-red-500 text-white px-4 py-1 rounded-md text-lg transition hover:bg-red-600 active:scale-95 disabled:bg-gray-300 disabled:cursor-not-allowed"
         >
           삭제
         </button>
@@ -417,37 +417,36 @@
     </div>
 
     <div class="bg-white p-4 rounded-lg shadow h-fit">
-      <h4 class="font-bold mb-2 text-lg border-b pb-2">새 공간 등록</h4>
+      <h4 class="font-bold mb-2 text-lg border-b pb-2">공간 등록</h4>
       <input
         type="text"
         placeholder="새 공간 이름 (예: N4-120)"
         bind:value={placeModel.place.name}
-        class="w-full border rounded p-2 mb-2 text-sm"
+        class="w-full border rounded p-2 mb-2 text-lg"
       />
       <textarea
         placeholder="공간 설명 (예: 빔 프로젝터가 있어요.)"
         rows="2"
         bind:value={placeModel.place.description}
-        class="w-full border rounded p-2 mb-2 text-sm"
+        class="w-full border rounded p-2 mb-2 text-lg"
       ></textarea>
       <input
         type="number"
         placeholder="공간 개수 (예: 4) - 해당 이름의 복사본 개수"
         bind:value={placeModel.place.count}
-        class="w-full border rounded p-2 text-sm"
+        class="w-full border rounded p-2 text-lg"
         min="1"
       />
       <div class="flex justify-end space-x-2 mt-4">
         <button
           onclick={() => handleAddPlace()}
           disabled={!placeModel.place.name.trim()}
-          class="bg-blue-500 text-white px-4 py-1 rounded-md text-sm transition hover:bg-blue-600 active:scale-95 disabled:bg-gray-300 disabled:cursor-not-allowed"
+          class="bg-blue-500 text-white px-4 py-1 rounded-md text-ml transition hover:bg-blue-600 active:scale-95 disabled:bg-gray-300 disabled:cursor-not-allowed"
         >
           등록
         </button>
       </div>
     </div>
-
 
     <div class="bg-white p-4 rounded-lg shadow">
       <div class="flex justify-between items-center mb-4 border-b pb-2">
@@ -457,19 +456,19 @@
       <form class="space-y-4">
         <div class="grid grid-cols-2 gap-4">
           <div class="col-span-1">
-            <label class="block text-xs font-medium text-gray-500 mb-1">날짜</label>
+            <label class="block text-lg font-medium text-gray-500 mb-1">날짜</label>
             <input
               type="date"
               bind:value={reservationFormModel.reservation.date}
-              class="w-full border rounded p-2 text-sm bg-gray-50"
+              class="w-full border rounded p-2 text-lg bg-gray-50"
             />
           </div>
           <div class="col-span-1">
-            <label class="block text-xs font-medium text-gray-500 mb-1">장소</label>
+            <label class="block text-lg font-medium text-gray-500 mb-1">장소</label>
             <select
             id="placeSelect"
             bind:value={reservationFormModel.reservation.place_name}
-            class="w-full border rounded p-2 text-sm">
+            class="w-full border rounded p-2 text-lg">
             <option value="" disabled>--- 선택 ---</option>
               {#each uniquePlaceNames as name}
                 <option value={name}>{name}</option>
@@ -480,33 +479,33 @@
 
         <div class="grid grid-cols-2 gap-4">
           <div class="col-span-1">
-            <label class="block text-xs font-medium text-gray-500 mb-1">예약자(학번)</label>
+            <label class="block text-lg font-medium text-gray-500 mb-1">예약자(학번)</label>
             <input
               type="text"
               placeholder="예: 20231234"
               bind:value={reservationFormModel.reservation.student_number}
-              class="w-full border rounded p-2 text-sm"
+              class="w-full border rounded p-2 text-lg"
             />
           </div>
           <div class="col-span-1">
-            <label class="block text-xs font-medium text-gray-500 mb-1">전화번호</label>
+            <label class="block text-lg font-medium text-gray-500 mb-1">전화번호</label>
             <input
               type="text"
               placeholder="예: 010-1234-5678"
               bind:value={reservationFormModel.reservation.phone_number}
-              class="w-full border rounded p-2 text-sm"
+              class="w-full border rounded p-2 text-lg"
             />
           </div>
         </div>
 
         <div class="grid grid-cols-2 gap-4">
           <div class="col-span-1">
-            <label class="block text-xs font-medium text-gray-500 mb-1">예약 시간</label>
+            <label class="block text-lg font-medium text-gray-500 mb-1">예약 시간</label>
             <div class="flex items-center space-x-2">
               <select
                 bind:value={startTime}
                 onchange={updateReservationTimes}
-                class="w-1/2 border rounded p-2 text-sm"
+                class="w-1/2 border rounded p-2 text-lg"
               >
                 {#each times as time}
                   <option value={time}>{time}:00</option>
@@ -518,7 +517,7 @@
               <select
                 bind:value={endTime}
                 onchange={updateReservationTimes}
-                class="w-1/2 border rounded p-2 text-sm"
+                class="w-1/2 border rounded p-2 text-lg"
               >
                 {#each times as time}
                   {@const hour = parseInt(time, 10)}
@@ -529,12 +528,12 @@
                 {/each}
               </select>
             </div>
-            <p class="text-xs text-gray-400 mt-1">
+            <p class="text-ml text-gray-400 mt-1">
               선택 시간: {reservationFormModel.reservation.times.join(', ')}
             </p>
           </div>
           <div>
-            <label class="block text-xs font-medium text-gray-500 mb-1">수량</label>
+            <label class="block text-lg font-medium text-gray-500 mb-1">수량</label>
             <div class="flex items-center space-x-2">
               <button
                 type="button"
@@ -557,7 +556,7 @@
               >+</button>
             </div>
             {#if reservationFormModel.reservation.id}
-              <p class="text-xs text-gray-400 mt-1">기존 예약은 수량을 변경할 수 없습니다.</p>
+              <p class="text-lg text-gray-400 mt-1">기존 예약은 수량을 변경할 수 없습니다.</p>
             {/if}
           </div>
         </div>
@@ -567,21 +566,21 @@
         <button
           onclick={() => changeToReservation(reservationFormModel.reservation.id, 'create')}
           disabled={!!reservationFormModel.reservation.id}
-          class=" bg-gray-300 text-white px-4 py-1 rounded-md text-sm transition hover:bg-green-600 active:scale-95 disabled:bg-gray-300 disabled:cursor-not-allowed"
+          class=" bg-gray-300 text-white px-4 py-1 rounded-md text-ml transition hover:bg-green-600 active:scale-95 disabled:bg-gray-300 disabled:cursor-not-allowed"
         >
           등록
         </button>
         <button
           onclick={() => changeToReservation(reservationFormModel.reservation.id, 'update')}
           disabled={!reservationFormModel.reservation.id}
-          class="bg-gray-300 text-white px-4 py-1 rounded-md text-sm transition hover:bg-blue-600 active:scale-95 disabled:bg-gray-300 disabled:cursor-not-allowed"
+          class="bg-gray-300 text-white px-4 py-1 rounded-md text-ml transition hover:bg-blue-600 active:scale-95 disabled:bg-gray-300 disabled:cursor-not-allowed"
         >
           수정
         </button>
         <button
           onclick={() => changeToReservation(reservationFormModel.reservation.id, 'delete')}
           disabled={!reservationFormModel.reservation.id}
-          class="bg-gray-300 text-white px-4 py-1 rounded-md text-sm transition hover:bg-red-600 active:scale-95 disabled:bg-gray-300 disabled:cursor-not-allowed"
+          class="bg-gray-300 text-white px-4 py-1 rounded-md text-ml transition hover:bg-red-600 active:scale-95 disabled:bg-gray-300 disabled:cursor-not-allowed"
         >
           삭제
         </button>
