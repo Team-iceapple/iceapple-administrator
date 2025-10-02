@@ -5,7 +5,7 @@ import { goto, invalidateAll } from '$app/navigation';
 import { MemberModel, ProjectFormModel } from '$lib/models/projects';
 import type { DetailProjectGetResponse, Project } from '$lib/types';
 import { generateYears } from '$lib/utils';
-import {authFetch} from "$lib/utils/auth";
+import { authFetch } from '$lib/utils/auth';
 
 const { form, projects, currentPage: initialCurrentPage, maxPage } = $props();
 
@@ -126,17 +126,29 @@ $inspect(form);
       {#each currentProjects as project (project.id)}
         <!-- 목록 아이템 -->
         <div
-          class="flex gap-2 p-2 cursor-pointer border border-gray-300 rounded-md shadow-sm hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          class="flex w-full cursor-pointer items-start justify-between gap-6 rounded-md border border-gray-300 p-4 shadow-sm hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-400"
           class:bg-blue-100={project.id === selectedProject?.id}
           onclick={(e) => handleProjectItem(e, project.id)}
           onkeydown={(e) => handleProjectItem(e, project.id)}
           role="button"
           tabindex={0}
         >
-          <img class="size-48 rounded-sm border border-gray-300" src={`/api/project/files/${project.thumbnail}?type=png`} alt={`${project.name} Thumbnail`} />
-          <div class="flex flex-col text-left">
-            <p class="text-2xl font-semibold text-gray-800">{project.name}</p>
-            <p class="text-xl text-gray-500">{project.members.map((member) => member.name)}</p>
+          <div class="flex items-start gap-4">
+            <img
+              class="size-48 flex-shrink-0 rounded-sm border border-gray-300"
+              src={`/api/project/files/${project.thumbnail}?type=png`}
+              alt={`${project.name} Thumbnail`}
+            />
+            <div class="flex flex-col text-left">
+              <p class="text-2xl font-semibold text-gray-800">{project.name}</p>
+              <p class="text-xl text-gray-500">{project.members.map((member) => member.name)}</p>
+            </div>
+          </div>
+
+          <div class="w-1/3 max-w-md flex-shrink-0 text-left">
+            <p class="mt-9 text-base text-gray-600 line-clamp-3">
+              {project.description}
+            </p>
           </div>
         </div>
       {/each}
