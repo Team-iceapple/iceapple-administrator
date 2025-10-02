@@ -331,14 +331,14 @@ $inspect(form);
                accept="image/*"
                bind:value={projectFile.thumbnail}
         />
-        <label for="thumbnail-upload" class="flex gap-1 p-1 px-2 border border-gray-300">
+        <label for="thumbnail-upload" class="h-18 flex items-center justify-center gap-1 p-1 px-2 border border-gray-300">
           <img class="size-8" src="/images/project/image-up.svg" alt="img upload icon" />
           <span>파일 선택</span>
         </label>
         {#if projectFile.thumbnail}
-          <span>{ projectFile.thumbnail }</span>
+          <span class="text-center">{ projectFile.thumbnail }</span>
         {:else}
-          <span>선택된 파일 없음</span>
+          <span class="text-center">선택된 파일 없음</span>
         {/if}
         {#if form && form.success === false}
           <p class="absolute text-red-500 text-xl -bottom-8 left-38">{ form.error.fieldErrors.thumbnail }</p>
@@ -355,14 +355,14 @@ $inspect(form);
                accept=".pdf"
                bind:value={projectFile.pdf}
         />
-        <label for="pdf-upload" class="flex gap-1 p-1 px-2 border border-gray-300">
+        <label for="pdf-upload" class="h-18 flex items-center justify-center gap-1 p-1 px-2 border border-gray-300">
           <img class="size-8" src="/images/project/file-up.svg" alt="pdf upload icon" />
           <span>파일 선택</span>
         </label>
         {#if projectFile.pdf}
-          <span>{ projectFile.pdf }</span>
+          <span class="text-center">{ projectFile.pdf }</span>
         {:else}
-          <span>선택된 파일 없음</span>
+          <span class="text-center">선택된 파일 없음</span>
         {/if}
         {#if form && form.success === false}
           <p class="absolute text-red-500 text-xl -bottom-8 left-38">{ form.error.fieldErrors.pdf }</p>
