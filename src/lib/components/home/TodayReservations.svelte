@@ -34,22 +34,22 @@
 </script>
 
 <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-  <h2 class="text-lg font-medium text-gray-900 mb-4">오늘 회의실 예약 현황</h2>
-  
-  <div class="overflow-x-auto">
-    <table class="w-full text-sm">
-      <thead>
+  <h2 class="text-2xl font-bold text-gray-900 mb-4">오늘 회의실 예약 현황</h2>
+
+  <div class="overflow-x-auto max-h-96 overflow-y-auto">
+    <table class="w-full text-base">
+      <thead class="sticky top-0 bg-white">
         <tr class="border-b border-gray-200">
-          <th class="text-left py-2 px-3 font-medium text-gray-700">회의실</th>
+          <th class="text-lg text-left py-2 px-3 font-medium text-gray-700">회의실</th>
           {#each timeSlots as slot}
-            <th class="text-center py-2 px-2 font-medium text-gray-700">{slot}</th>
+            <th class="text-base text-center py-2 px-2 font-medium text-gray-700">{slot}</th>
           {/each}
         </tr>
       </thead>
       <tbody>
         {#each reservations as reservation}
           {@const maxCapacity = getMaxCapacity(reservation.description)}
-          <tr class="border-b border-gray-100">
+          <tr class="text-lg border-b border-gray-100">
             <td class="py-2 px-3 font-medium text-gray-900">{reservation.name}</td>
             {#each reservation.count as count, index}
               <td class="text-center py-2 px-2">

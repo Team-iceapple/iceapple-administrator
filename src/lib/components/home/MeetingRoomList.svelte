@@ -8,7 +8,7 @@
 </script>
 
 <div class="toggle-content bg-gray-50 rounded-lg p-3 mb-3">
-  <div class="space-y-2 text-sm">
+  <div class="space-y-2 text-base">
     {#each places as place}
       <div class="flex justify-between">
         <span class="">{place.name}</span>

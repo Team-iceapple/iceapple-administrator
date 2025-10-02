@@ -12,7 +12,7 @@
     <i class="text-indigo-600 {icon}"></i>
   </div>
   <div>
-    <h3 class="font-medium text-gray-900">{title}</h3>
+    <h3 class="font-bold text-gray-900">{title}</h3>
     <p class="text-2xl font-semibold text-indigo-600">{value}</p>
   </div>
 </div>
