@@ -27,11 +27,11 @@
   });
 </script>
 
-<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-  <h2 class="text-lg font-medium text-gray-900 mb-4">홈 영상 관리</h2>
-  
+<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 min-h-80 flex flex-col">
+  <h2 class="text-2xl font-bold text-gray-900 mb-4">홈 영상 관리</h2>
+
   <!-- 현재 영상 정보 -->
-  <div class="flex items-center space-x-4 mb-6">
+  <div class="flex items-center space-x-4 mb-6 flex-1">
     <!-- 현재 영상 미리보기 -->
     {#if currentVideo && currentVideo.fileUrl}
       <div class="w-48 h-28 bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
@@ -52,27 +52,27 @@
     {/if}
     
     <div class="flex-1">
-      <h3 class="font-medium text-gray-900 text-lg">
+      <h3 class="font-medium text-gray-900 text-xl">
         현재 재생 중인 영상: <span class="text-indigo-600">{currentVideo?.title || '재생 중인 영상이 없습니다'}</span>
       </h3>
-      <p class="text-sm text-gray-600 mt-1">우선순위가 가장 높은 활성화된 영상이 자동으로 재생됩니다</p>
+      <p class="text-lg text-gray-600 mt-1">우선순위가 가장 높은 활성화된 영상이 자동으로 재생됩니다</p>
     </div>
   </div>
 
   <!-- 액션 버튼들 -->
   <div class="flex space-x-3 mb-4">
     <button 
-      class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
+      class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-lg font-medium hover:bg-indigo-700 transition-colors"
       onclick={() => showUploadForm = !showUploadForm}>
       새 영상 등록
     </button>
     <button 
-      class="bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-700 transition-colors"
+      class="bg-gray-600 text-white px-4 py-2 rounded-lg text-lg font-medium hover:bg-gray-700 transition-colors"
       onclick={() => showVideoList = !showVideoList}>
       영상 목록 관리
     </button>
     <button 
-      class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors"
+      class="bg-green-600 text-white px-4 py-2 rounded-lg text-lg font-medium hover:bg-green-700 transition-colors"
       onclick={() => showPlaylist = !showPlaylist}>
       활성화된 영상 ({playlist.length}개)
     </button>

@@ -8,7 +8,7 @@
 </script>
 
 <div class="toggle-content bg-gray-50 rounded-lg p-3 mt-3">
-  <div class="space-y-2 text-sm">
+  <div class="space-y-2 text-base">
     {#each reservations as reservation}
       <div class="flex justify-between">
         <span class="font-medium text-gray-800">{reservation.student.number}</span>
