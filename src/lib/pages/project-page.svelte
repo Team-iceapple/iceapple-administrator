@@ -5,7 +5,7 @@ import { goto, invalidateAll } from '$app/navigation';
 import { MemberModel, ProjectFormModel } from '$lib/models/projects';
 import type { DetailProjectGetResponse, Project } from '$lib/types';
 import { generateYears } from '$lib/utils';
-import {authFetch} from "$lib/utils/auth";
+import { authFetch } from '$lib/utils/auth';
 
 const { form, projects, currentPage: initialCurrentPage, maxPage } = $props();
 
@@ -92,9 +92,9 @@ async function afterProjectCreateOrUpdate(result: ActionResult) {
 $inspect(form);
 </script>
 
-<div class="flex">
+<div class="flex px-4">
   <!-- 좌측 패널 -->
-  <div class="basis-1/2">
+  <div class="basis-2/3">
     <div class="flex flex-col gap-4 min-h-[1140px] ">
       <div class="mt-2 mx-auto flex items-center gap-4 text-gray-700 text-xl">
         <button class="px-2 py-1 border border-gray-400 rounded-sm
@@ -126,17 +126,29 @@ $inspect(form);
       {#each currentProjects as project (project.id)}
         <!-- 목록 아이템 -->
         <div
-          class="flex gap-2 p-2 cursor-pointer border border-gray-300 rounded-md shadow-sm hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          class="flex w-full cursor-pointer items-start justify-between gap-6 rounded-md border border-gray-300 p-4 shadow-sm hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-400"
           class:bg-blue-100={project.id === selectedProject?.id}
           onclick={(e) => handleProjectItem(e, project.id)}
           onkeydown={(e) => handleProjectItem(e, project.id)}
           role="button"
           tabindex={0}
         >
-          <img class="size-48 rounded-sm border border-gray-300" src={`/api/project/files/${project.thumbnail}?type=png`} alt={`${project.name} Thumbnail`} />
-          <div class="flex flex-col text-left">
-            <p class="text-2xl font-semibold text-gray-800">{project.name}</p>
-            <p class="text-xl text-gray-500">{project.members.map((member) => member.name)}</p>
+          <div class="flex items-start gap-4">
+            <img
+              class="size-48 flex-shrink-0 rounded-sm border border-gray-300"
+              src={`/api/project/files/${project.thumbnail}?type=png`}
+              alt={`${project.name} Thumbnail`}
+            />
+            <div class="flex flex-col text-left">
+              <p class="text-2xl font-semibold text-gray-800">{project.name}</p>
+              <p class="text-xl text-gray-500">{project.members.map((member) => member.name)}</p>
+            </div>
+          </div>
+
+          <div class="w-1/3 max-w-md flex-shrink-0 text-left">
+            <p class="mt-9 text-base text-gray-600 line-clamp-3">
+              {project.description}
+            </p>
           </div>
         </div>
       {/each}
@@ -144,7 +156,7 @@ $inspect(form);
   </div>
 
   <!-- 세로 구분선 -->
-  <div class="border-l-2 border-l-gray-100 mx-2"></div>
+  <div class="border-l-2 border-l-gray-100 mx-4"></div>
 
   <!-- 우측 패널 -->
   <form class="flex flex-col basis-1/2"
@@ -171,10 +183,10 @@ $inspect(form);
       </div>
     </div>
     <!-- 세부 정보 목록 -->
-    <div class="flex flex-col p-4 gap-8">
+    <div class="flex flex-col p-4 gap-2">
       <!-- 년도 -->
-      <div class="flex items-center gap-2 text-2xl">
-        <label class="w-36 text-right" for="year-input">년도</label>
+      <div class="flex flex-col gap-1 text-xl">
+        <label class="w-36" for="year-input">년도</label>
         <select class="max-w-24 flex-1 p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                 id='year-input'
                 name="year"
@@ -190,8 +202,8 @@ $inspect(form);
       </div>
 
       <!-- 프로젝트 이름 -->
-      <div class="relative flex items-center gap-2 text-2xl">
-        <label class="w-36 text-right" for="name-input">제목</label>
+      <div class="relative flex flex-col gap-1 text-xl">
+        <label class="w-36" for="name-input">제목</label>
         <input class="flex-1 p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                id="name-input"
                name="name"
@@ -204,8 +216,8 @@ $inspect(form);
       </div>
 
       <!-- 팀 이름 -->
-      <div class="relative flex items-center gap-2 text-2xl">
-        <label class="w-36 text-right" for="team-name-input">팀 이름</label>
+      <div class="relative flex flex-col gap-1 text-xl">
+        <label class="w-36" for="team-name-input">팀 이름</label>
         <input class="flex-1 p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                id="team-name-input"
                name="team_name"
@@ -218,11 +230,11 @@ $inspect(form);
       </div>
 
       <!-- 팀원 -->
-      <div class="flex flex-col gap-2">
-        <div class="flex items-center gap-2 text-2xl">
-          <label class="w-36 text-right" for="member-name-input">팀원</label>
+      <div class="flex flex-col gap-1">
+        <div class="flex flex-col gap-1 text-xl">
+          <label class="w-36" for="member-name-input">팀원</label>
 
-          <div class="flex-1 flex gap-2">
+          <div class="flex gap-1 h-11">
             <input class="p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                    id="member-name-input"
                    bind:value={member.name}
@@ -234,7 +246,7 @@ $inspect(form);
                    type="text"
                    placeholder="팀원 세부 정보.."
             />
-            <button class="px-3 py-1 border border-gray-400 rounded-sm text-gray-700 hover:bg-gray-100 active:ring-1 active:ring-blue-300 transition-colors"
+            <button class="w-18 px-3 py-1 border border-gray-400 rounded-sm text-gray-700 hover:bg-gray-100 active:ring-1 active:ring-blue-300 transition-colors"
                     type="button"
                     onclick={projectFormModel.addMember}
             >
@@ -244,13 +256,13 @@ $inspect(form);
         </div>
 
         <!-- 팀원 목록 -->
-        <div class="relative ml-38 border border-gray-300 rounded">
+        <div class="relative border border-gray-300 rounded">
           <input type="hidden"
                  name="members"
                  value={JSON.stringify(project.members)}
           />
 
-          <table class="table-fixed w-full text-2xl">
+          <table class="table-fixed w-full text-xl">
             <thead>
               <tr class="border-b border-gray-300 bg-slate-50 text-left">
                 <th class="w-1/8 px-2 py-1 border-r border-gray-300 font-normal">이름</th>
@@ -283,8 +295,8 @@ $inspect(form);
       </div>
 
       <!-- 프로젝트 설명 -->
-      <div class="relative flex text-2xl gap-2">
-        <label class="w-36 text-right" for="description-text-area">설명</label>
+      <div class="relative flex flex-col text-xl gap-1">
+        <label class="w-36" for="description-text-area">설명</label>
         <textarea class="flex-1 p-1 border border-gray-300 rounded-sm h-24 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   id="description-text-area"
                   name="description"
@@ -296,8 +308,8 @@ $inspect(form);
       </div>
 
       <!-- 메인 URL (QR 코드 용 주소) -->
-      <div class="relative flex items-center gap-2 text-2xl">
-        <label class="w-36 text-right" for="main-url-input">메인 URL</label>
+      <div class="relative flex flex-col gap-1 text-xl">
+        <label class="w-36" for="main-url-input">메인 URL</label>
         <input class="flex-1 p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                id="main-url-input"
                name="main_url"
@@ -310,8 +322,8 @@ $inspect(form);
       </div>
 
       <!-- 썸네일 업로드 -->
-      <div class="relative flex items-center gap-2 text-2xl">
-        <label class="w-36 text-right" for="thumbnail-upload">썸네일 이미지</label>
+      <div class="relative flex flex-col gap-1 text-xl">
+        <label class="w-36" for="thumbnail-upload">썸네일 이미지</label>
         <input class="hidden flex-1 p-1"
                type="file"
                id="thumbnail-upload"
@@ -319,14 +331,14 @@ $inspect(form);
                accept="image/*"
                bind:value={projectFile.thumbnail}
         />
-        <label for="thumbnail-upload" class="flex gap-2 p-1 px-2 border border-gray-300">
+        <label for="thumbnail-upload" class="h-18 flex items-center justify-center gap-1 p-1 px-2 border border-gray-300">
           <img class="size-8" src="/images/project/image-up.svg" alt="img upload icon" />
           <span>파일 선택</span>
         </label>
         {#if projectFile.thumbnail}
-          <span>{ projectFile.thumbnail }</span>
+          <span class="text-center">{ projectFile.thumbnail }</span>
         {:else}
-          <span>선택된 파일 없음</span>
+          <span class="text-center">선택된 파일 없음</span>
         {/if}
         {#if form && form.success === false}
           <p class="absolute text-red-500 text-xl -bottom-8 left-38">{ form.error.fieldErrors.thumbnail }</p>
@@ -334,8 +346,8 @@ $inspect(form);
       </div>
 
       <!-- PDF 파일 업로드 -->
-      <div class="relative flex items-center gap-2 text-2xl">
-        <label class="w-36 text-right" for="pdf-upload">포스터 PDF</label>
+      <div class="relative flex flex-col gap-1 text-xl">
+        <label class="w-36" for="pdf-upload">포스터 PDF</label>
         <input class="hidden flex-1 p-1"
                type="file"
                id="pdf-upload"
@@ -343,14 +355,14 @@ $inspect(form);
                accept=".pdf"
                bind:value={projectFile.pdf}
         />
-        <label for="pdf-upload" class="flex gap-2 p-1 px-2 border border-gray-300">
+        <label for="pdf-upload" class="h-18 flex items-center justify-center gap-1 p-1 px-2 border border-gray-300">
           <img class="size-8" src="/images/project/file-up.svg" alt="pdf upload icon" />
           <span>파일 선택</span>
         </label>
         {#if projectFile.pdf}
-          <span>{ projectFile.pdf }</span>
+          <span class="text-center">{ projectFile.pdf }</span>
         {:else}
-          <span>선택된 파일 없음</span>
+          <span class="text-center">선택된 파일 없음</span>
         {/if}
         {#if form && form.success === false}
           <p class="absolute text-red-500 text-xl -bottom-8 left-38">{ form.error.fieldErrors.pdf }</p>
