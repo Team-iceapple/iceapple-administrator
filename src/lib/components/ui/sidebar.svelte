@@ -5,7 +5,7 @@
 
     // 사이드바 메뉴 아이템
     const menuItems = [
-        { name: 'Home', href: '/', icon: '/images/slidebar/home.svg' },
+        { name: 'Home', href: '/dashboard', icon: '/images/slidebar/home.svg' },
         { name: 'Place', href: '/place', icon: '/images/slidebar/place.svg' },
         { name: 'Projects', href: '/projects', icon: '/images/slidebar/project.svg' },
     ];
