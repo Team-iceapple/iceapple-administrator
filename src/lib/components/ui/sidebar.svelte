@@ -16,12 +16,15 @@
     let timeLeft = $state(typeof window !== 'undefined' ? getTokenTimeLeft() : 0);
     let timer: number | null = null;
     let showExtendPopup = $state(false);
-
+    let currentTime = $state(new Date());
 
     onMount(() => {
         // 이미 인증된 상태이므로 바로 타이머 시작
         updateTimeLeft();
-        timer = setInterval(updateTimeLeft, 1000);
+        timer = setInterval(() => {
+            updateTimeLeft();
+            currentTime = new Date(); // 현재 시간도 함께 업데이트
+        }, 1000);
     });
 
     onDestroy(() => {
@@ -69,6 +72,17 @@
         } else if (secs > 0) {
             return `${secs}초`
         }
+    }
+
+    function formatCurrentTime(date: Date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+
+        return `${year}.${month}.${day} ${hours}:${minutes}:${seconds}`;
     }
 
 
@@ -184,6 +198,16 @@
         </button>
       </div>
     {/if}
+
+    <!-- 현재 시간 표시 (최하단) -->
+    <div class="border-t border-gray-200 p-4">
+      <div class="text-center">
+        <div class="text-xs text-gray-500 mb-1">현재 시간</div>
+        <div class="text-sm font-mono text-gray-700">
+          {formatCurrentTime(currentTime)}
+        </div>
+      </div>
+    </div>
   </div>
 </aside>
 
