@@ -187,40 +187,32 @@
   </div>
 </aside>
 
-<!-- 세션 연장 팝업 -->
+<!-- 세션 연장 알림 (Alert) -->
 {#if showExtendPopup}
-  <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div class="bg-white rounded-lg p-6 max-w-sm mx-4 shadow-xl">
-      <div class="flex items-center mb-4">
-        <svg class="w-6 h-6 text-yellow-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
-        </svg>
-        <h3 class="text-lg font-semibold text-gray-900">세션 만료 알림</h3>
-      </div>
+  <div class="fixed top-4 left-1/2 transform -translate-x-1/2 bg-gray-100 border border-gray-300 rounded-lg px-4 py-3 z-50 max-w-md shadow-sm">
+    <div class="flex items-center justify-between">
+      <span class="text-gray-800 text-sm">
+        로그인 세션이 5분 후에 만료됩니다. 연장하시겠습니까?
+      </span>
 
-      <p class="text-gray-600 mb-6">
-        로그인 세션이 5분 후에 만료됩니다.<br>
-        세션을 연장하시겠습니까?
-      </p>
-
-      <div class="flex space-x-3">
+      <div class="flex items-center space-x-2 ml-4">
         <button
           onclick={handleExtendSession}
           disabled={isExtending}
-          class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+          class="bg-gray-600 text-white px-3 py-1 rounded text-sm hover:bg-gray-700 transition-colors disabled:opacity-50"
         >
           {#if isExtending}
             연장 중...
           {:else}
-            연장하기
+            연장
           {/if}
         </button>
 
         <button
           onclick={handleDeclineExtension}
-          class="flex-1 bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 transition-colors"
+          class="text-gray-600 hover:text-gray-800 text-sm"
         >
-          나중에
+          ✕
         </button>
       </div>
     </div>
