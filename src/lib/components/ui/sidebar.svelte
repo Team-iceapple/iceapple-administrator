@@ -5,23 +5,23 @@
 
     // 사이드바 메뉴 아이템
     const menuItems = [
-        { name: 'Home', href: '/', icon: '/images/slidebar/home.svg' },
+        { name: 'Home', href: '/dashboard', icon: '/images/slidebar/home.svg' },
         { name: 'Place', href: '/place', icon: '/images/slidebar/place.svg' },
         { name: 'Projects', href: '/projects', icon: '/images/slidebar/project.svg' },
     ];
 
-    let isLoggedIn = $state(false);
+    // 인증된 레이아웃 안에서는 항상 로그인된 상태
+    let isLoggedIn = $state(true);
     let isExtending = $state(false);
-    let timeLeft = $state(0);
+    let timeLeft = $state(typeof window !== 'undefined' ? getTokenTimeLeft() : 0);
     let timer: number | null = null;
+    let showExtendPopup = $state(false);
 
 
     onMount(() => {
-        isLoggedIn = hasToken();
-        if(isLoggedIn) {
-            updateTimeLeft();
-            timer = setInterval(updateTimeLeft, 1000);
-        }
+        // 이미 인증된 상태이므로 바로 타이머 시작
+        updateTimeLeft();
+        timer = setInterval(updateTimeLeft, 1000);
     });
 
     onDestroy(() => {
@@ -33,19 +33,30 @@
     function updateTimeLeft() {
         timeLeft = getTokenTimeLeft();
 
+        // 5분(300초) 남았을 때 연장 팝업 표시
+        if(timeLeft === 300 && !showExtendPopup) {
+            showExtendPopup = true;
+        }
+
         if(timeLeft === 0 && isLoggedIn) {
             removeToken();
             isLoggedIn = false;
+            showExtendPopup = false;
             if(timer) {
                 clearInterval(timer);
                 timer = null;
             }
+            // 토큰 만료 시 로그인 페이지로 리다이렉트
+            goto('/');
         }
     }
 
     function formatTime(seconds: number) {
-        if(seconds <= 0) {
+        // 초기 로딩 중이거나 시간이 0일 때 구분
+        if(seconds === 0 && typeof window !== 'undefined' && !hasToken()) {
             return '만료됨';
+        } else if(seconds <= 0) {
+            return '로딩 중...';
         }
         const hours = Math.floor(seconds / 3600);
         const minutes = Math.floor((seconds % 3600) / 60);
@@ -61,9 +72,10 @@
     }
 
 
-    // 세션 연장 처리
+    // 세션 연장 처리 (팝업 없이 바로 연장)
     async function handleExtendSession() {
         isExtending = true;
+        showExtendPopup = false; // 팝업 닫기
 
         try {
             const result = await extendSession();
@@ -72,7 +84,8 @@
 
             if (result.success) {
                 updateTimeLeft();
-                alert(result.message);
+                // 성공 시 팝업 대신 간단한 알림 (선택사항)
+                // alert(result.message);
             } else {
                 alert(result.message);
             }
@@ -82,6 +95,11 @@
         } finally {
             isExtending = false;
         }
+    }
+
+    // 팝업에서 연장 거부 시
+    function handleDeclineExtension() {
+        showExtendPopup = false;
     }
 
     // 로그아웃 처리
@@ -126,10 +144,10 @@
     <!-- 세션 연장 및 로그아웃 버튼 (로그인 상태일 때만 표시) -->
     {#if isLoggedIn}
       <div class="border-t border-gray-200  p-4 space-y-2">
-        <!-- 세션 남은 시간 표시 -->
+        <!-- 자동 로그아웃 시간 표시 -->
         <div class="px-4 py-2 bg-gray-100 rounded-lg">
           <div class="flex items-center justify-between">
-            <span class="text-sm font-medium text-gray-700">로그인 남은 시간</span>
+            <span class="text-sm font-medium text-gray-700">자동 로그아웃</span>
             <span class="text-sm font-bold {timeLeft < 300 ? 'text-red-600' : timeLeft < 900 ? 'text-yellow-600' : 'text-green-600'}">
               {formatTime(timeLeft)}
             </span>
@@ -168,3 +186,35 @@
     {/if}
   </div>
 </aside>
+
+<!-- 세션 연장 알림 (Alert) -->
+{#if showExtendPopup}
+  <div class="fixed top-4 left-1/2 transform -translate-x-1/2 bg-gray-100 border border-gray-300 rounded-lg px-4 py-3 z-50 max-w-md shadow-sm">
+    <div class="flex items-center justify-between">
+      <span class="text-gray-800 text-sm">
+        로그인 세션이 5분 후에 만료됩니다. 연장하시겠습니까?
+      </span>
+
+      <div class="flex items-center space-x-2 ml-4">
+        <button
+          onclick={handleExtendSession}
+          disabled={isExtending}
+          class="bg-gray-600 text-white px-3 py-1 rounded text-sm hover:bg-gray-700 transition-colors disabled:opacity-50"
+        >
+          {#if isExtending}
+            연장 중...
+          {:else}
+            연장
+          {/if}
+        </button>
+
+        <button
+          onclick={handleDeclineExtension}
+          class="text-gray-600 hover:text-gray-800 text-sm"
+        >
+          ✕
+        </button>
+      </div>
+    </div>
+  </div>
+{/if}

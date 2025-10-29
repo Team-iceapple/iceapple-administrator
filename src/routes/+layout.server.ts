@@ -1,11 +1,6 @@
-import type {PageServerLoad} from "../../.svelte-kit/types/src/routes/$types";
+import type { LayoutServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ cookies, url }) => {
-    const token = cookies.get('accessToken');
-    const isAuthenticated = !!token;
-
-    return {
-        isAuthenticated,
-        pathname: url.pathname
-    };
+export const load: LayoutServerLoad = async () => {
+  // 루트 레이아웃에서는 인증 상태 확인하지 않음
+  return {};
 };

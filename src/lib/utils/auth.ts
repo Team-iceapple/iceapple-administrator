@@ -22,6 +22,9 @@ export function setToken(token: string): void {
 
     // 쿠키에도 저장 (서버에서 접근 가능)
     document.cookie = `${TOKEN_KEY}=${token}; path=/; max-age=${7 * 24 * 60 * 60}; samesite=strict`;
+    
+    // 커스텀 이벤트 발생시켜 즉시 UI 업데이트
+    window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { authenticated: true } }));
 }
 
 /**
@@ -33,6 +36,9 @@ export function removeToken(): void {
 
     // 쿠키에서도 삭제
     document.cookie = `${TOKEN_KEY}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+    
+    // 커스텀 이벤트 발생시켜 즉시 UI 업데이트
+    window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { authenticated: false } }));
 
 }
 
