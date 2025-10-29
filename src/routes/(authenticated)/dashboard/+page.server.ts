@@ -4,7 +4,6 @@ import type { Actions, PageServerLoad } from './$types';
 import type { ApiReservation } from '$lib/types/home';
 
 export const load: PageServerLoad = async ({ fetch, cookies }) => {
-  // 토큰 확인 후 없으면 루트(로그인) 페이지로 리다이렉트
   const token = cookies.get('accessToken');
   if (!token) {
     throw redirect(307, '/');

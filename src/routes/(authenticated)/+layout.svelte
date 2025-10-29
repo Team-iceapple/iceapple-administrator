@@ -6,18 +6,16 @@
   import type { LayoutData } from './$types';
 
   let { data, children }: { data: LayoutData, children: any } = $props();
-  
+
   let isAuthenticated = $state(data.isAuthenticated);
 
   onMount(() => {
-    // 클라이언트에서 토큰 확인
     const clientTokenExists = hasToken();
     if (!clientTokenExists) {
-      // 토큰이 없으면 로그인 페이지로 리다이렉트
       goto('/');
       return;
     }
-    
+
     if (clientTokenExists !== isAuthenticated) {
       isAuthenticated = clientTokenExists;
     }
@@ -56,7 +54,7 @@
 
 <div class="ml-64">
   <Header title={data.pageTitle}/>
-  
+
   <main class="p-2">
     {@render children()}
   </main>
