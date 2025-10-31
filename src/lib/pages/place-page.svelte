@@ -174,7 +174,7 @@
 
             alert(result.message ?? '공간이 등록되었습니다.');
             placeModel.clear();
-            showPlaceModal = false; // ✅ 등록 후 모달 닫기
+            showPlaceModal = false;
         } catch (err) {
             console.error(err);
             alert('네트워크 오류가 발생했습니다.');
@@ -198,7 +198,6 @@
         }
 
         selectedPlaceId = ([]);
-        // invalidateAll(); // 필요하면 유지 가능
     }
 
     function handleReservationItem(
@@ -321,25 +320,57 @@
 </script>
 
 <main class="p-4 min-h-screen">
-  <div class="flex justify-between items-center mb-6">
-    <div class="flex items-center space-x-6">
-      <span class="text-gray-600 text-xl">날짜 선택 :</span>
-      <input
-        type="date"
-        placeholder="오늘-Today"
-        class="bg-white px-4 py-2 border rounded-md shadow-sm text-xl"
-        bind:value={selectedDate}
-        onchange={(e) => selectedDate = e.currentTarget.value}
-      />
+  <div class="text-xl bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div class="flex items-center space-x-6">
+        <span class="text-xl font-semibold">날짜 선택</span>
+        <input
+          type="date"
+          placeholder="오늘-Today"
+          class="bg-white px-4 py-2 border rounded-md shadow-sm text-xl"
+          bind:value={selectedDate}
+          onchange={(e) => selectedDate = e.currentTarget.value}
+        />
+      </div>
+
+      <button
+        type="button"
+        class="px-3 py-2 text-base rounded-md border border-gray-300 bg-gray-50 hover:bg-gray-100 active:scale-95 text-gray-700 w-full md:w-auto"
+        onclick={() => {
+        const today = new Date().toISOString().split("T")[0];
+        selectedDate = today;
+      }}
+      >
+        오늘로 이동
+      </button>
     </div>
   </div>
 
-  <div class="relative mb-6">
+  <div class="text-xl bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+    <div class="flex items-start justify-between mb-4">
+      <h2 class="font-bold text-2xl flex items-center">
+        예약 현황
+        <span class="ml-2 text-sm text-gray-500 font-normal">
+        {selectedDate}
+      </span>
+      </h2>
+      <button
+        type="button"
+        class="px-3 py-2 text-base rounded-md border border-gray-300 bg-gray-50 hover:bg-gray-100 active:scale-95 text-gray-700 w-full md:w-auto"
+        onclick={() => invalidateAll()}
+      >
+        새로고침
+      </button>
+    </div>
+
     <div class="flex space-x-4 overflow-x-auto pr-2 scrollbar-hide">
       {#each places as place (place.individualId)}
-        <div class="bg-white p-3 rounded-lg shadow min-w-[230px] flex-shrink-0">
-          <h3 class="font-bold text-2xl border-b pb-2 mb-2">{place.displayName}</h3>
-          <ul class="space-y-1 text-xl">
+        <div class="min-w-[230px] flex-shrink-0 rounded-lg border border-gray-200 bg-gray-50 p-3">
+          <h3 class="font-bold text-xl border-b pb-2 mb-2 text-gray-800">
+            {place.displayName}
+          </h3>
+
+          <ul class="space-y-1 text-lg">
             {#each times as time}
               {@const hour = parseInt(time, 10)}
 
@@ -360,14 +391,14 @@
                     tabindex="0"
                   >
                     <span class="w-3 h-3 rounded-full mr-2 bg-red-400"></span>
-                    <span>{time}:00</span>
-                    <span class="ml-auto text-black-500 text-ml">{reservation.student.number}</span>
+                    <span class="text-gray-800">{time}:00</span>
+                    <span class="ml-auto text-gray-700 text-base">{reservation.student.number}</span>
                   </button>
                 {:else}
                   <div class="flex items-center w-full opacity-70">
                     <span class="w-3 h-3 rounded-full mr-2 bg-green-400"></span>
-                    <span>{time}:00</span>
-                    <span class="ml-auto text-black-500 text-lg">가능</span>
+                    <span class="text-gray-800">{time}:00</span>
+                    <span class="ml-auto text-gray-500 text-base">가능</span>
                   </div>
                 {/if}
               </li>
@@ -380,9 +411,9 @@
 
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
-    <div class="bg-white p-4 rounded-lg shadow">
+    <div class="text-xl bg-white rounded-lg shadow-sm border border-gray-200 p-6">
       <div class="flex justify-between items-center mb-4 border-b pb-2">
-        <h3 class="font-bold text-lg">공간 예약 관리</h3>
+        <h3 class="font-bold text-2xl">공간 예약 관리</h3>
       </div>
 
       <form class="space-y-4">
@@ -520,30 +551,30 @@
         <button
           onclick={() => changeToReservation(reservationFormModel.reservation.id, 'create')}
           disabled={!!reservationFormModel.reservation.id}
-          class=" bg-gray-300 text-white px-4 py-1 rounded-md text-ml transition hover:bg-green-600 active:scale-95 disabled:bg-gray-300 disabled:cursor-not-allowed"
+          class="w-fit bg-gray-300 text-white px-4 py-1 rounded-md text-ml transition hover:bg-green-600 active:scale-95 disabled:bg-gray-300 disabled:cursor-not-allowed"
         >
           등록
         </button>
         <button
           onclick={() => changeToReservation(reservationFormModel.reservation.id, 'update')}
           disabled={!reservationFormModel.reservation.id}
-          class="bg-gray-300 text-white px-4 py-1 rounded-md text-ml transition hover:bg-blue-600 active:scale-95 disabled:bg-gray-300 disabled:cursor-not-allowed"
+          class="w-fit bg-gray-300 text-white px-4 py-1 rounded-md text-ml transition hover:bg-blue-600 active:scale-95 disabled:bg-gray-300 disabled:cursor-not-allowed"
         >
           수정
         </button>
         <button
           onclick={() => changeToReservation(reservationFormModel.reservation.id, 'delete')}
           disabled={!reservationFormModel.reservation.id}
-          class="bg-gray-300 text-white px-4 py-1 rounded-md text-ml transition hover:bg-red-600 active:scale-95 disabled:bg-gray-300 disabled:cursor-not-allowed"
+          class="w-fit bg-gray-300 text-white px-4 py-1 rounded-md text-ml transition hover:bg-red-600 active:scale-95 disabled:bg-gray-300 disabled:cursor-not-allowed"
         >
           삭제
         </button>
       </div>
     </div>
 
-    <div class="bg-white p-4 rounded-lg shadow h-fit">
+    <div class="text-xl bg-white rounded-lg shadow-sm border border-gray-200 p-6 h-fit">
       <div class="flex justify-between items-center mb-4 border-b pb-2">
-        <h3 class="font-bold text-lg">공간 관리</h3>
+        <h3 class="font-bold text-2xl">공간 관리</h3>
 
         <button
           type="button"
@@ -575,7 +606,7 @@
             />
             <label
               for={`place-${place.id}`}
-              class="font-semibold cursor-pointer select-none w-full text-lg"
+              class="font-semibold cursor-pointer select-none w-full text-x"
             >
               {place.name}
             </label>
